@@ -1,7 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: src/main/resources/db/changelog/test-yaml.changelog.yaml
-  - include:
-      file: src/main/resources/db/changelog/test2-yaml.changelog.yaml
-  - include:
-      file: src/main/resources/db/changelog/test6-yaml.changelog.yaml
