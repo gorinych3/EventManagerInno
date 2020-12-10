@@ -10,7 +10,7 @@
         <tbody>
         <#list users as user>
             <tr>
-                <td>${user.name}</td>
+                <td>${user.username}</td>
             </tr>
         </#list>
         </tbody>

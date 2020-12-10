@@ -1,0 +1,20 @@
+spring:
+  # Настройка liquibase миграций
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  # Hibernate & JPA
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQL10Dialect
+    open-in-view: false
+  # Настройка подключения к базе
+  datasource:
+    url: jdbc:postgresql://localhost:5433/event_manager?serverTimezone=Europe/Moscow
+    username: inno
+    password: inno
+logging:
+  level:
+    liquibase: INFO
