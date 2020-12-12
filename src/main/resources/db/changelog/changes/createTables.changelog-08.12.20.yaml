@@ -26,7 +26,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: phone_number
-                  type: varchar(12)
+                  type: int
                   constraints:
                     nullable: true
               - column:
