@@ -24,6 +24,5 @@ public class Event {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "events_users", joinColumns = @JoinColumn(name = "eventId"),
             inverseJoinColumns = @JoinColumn(name = "userId"))
-
     private Set<User> users;
 }

@@ -62,8 +62,8 @@ databaseChangeLog:
             tableName: events
             columns:
               - column:
-                  name: event_id
-                  type: bigint
+                  name: id
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
@@ -74,15 +74,12 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_events_user
-                    references: event_user
+                    foreignKeyName: fk_events_event_user
+                    references: event_user(id)
               - column:
-                  name: event_name
-                  type: varchar(255)
+                  name: role_id
+                  type: int
                   constraints:
                     nullable: false
-              - column:
-                  name: create_date
-                  type: datetime
-                  constraints:
-                    nullable: false
+                    foreignKeyName: fk_events_event_role
+                    references: event_role(id)

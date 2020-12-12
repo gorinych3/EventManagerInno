@@ -1,7 +1,28 @@
 databaseChangeLog:
   - changeSet:
+      id: dropTable-event_user
+      author: egor.ganzya
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: event_user
+  - changeSet:
+      id: dropTable-event_role
+      author: egor.ganzya
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: event_role
+  - changeSet:
+      id: dropTable-events
+      author: egor.ganzya
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: events
+  - changeSet:
       id: create_table_users
-      author: gorinych3
+      author: egor.ganzya
       changes:
         - createTable:
             tableName: users
@@ -39,7 +60,7 @@ databaseChangeLog:
                   type: varchar(12)
   - changeSet:
       id: create_table_user_role
-      author: gorinych3
+      author: egor.ganzya
       changes:
         - createTable:
             tableName: user_role
@@ -57,7 +78,7 @@ databaseChangeLog:
                     nullable: false
   - changeSet:
       id: create_table_events
-      author: gorinych3
+      author: egor.ganzya
       changes:
         - createTable:
             tableName: events
@@ -82,7 +103,7 @@ databaseChangeLog:
   #                    nullable: false
   - changeSet:
       id: create_table_events_users
-      author: gorinych3
+      author: egor.ganzya
       changes:
         - createTable:
             tableName: events_users
@@ -91,7 +112,7 @@ databaseChangeLog:
                   name: event_id
                   type: bigint
                   constraints:
-                    foreignKeyName: fk_event_user
+                    foreignKeyName: events_pkey
                     references: events
               - column:
                   name: user_id
@@ -99,18 +120,3 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_user_event
                     references: users
-  - changeSet:
-      id: addForeignKeyConstraint-events_users
-      author: gorinych3
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: event_id
-            baseTableName: events
-            constraintName: fk_events_users
-            deferrable: true
-            initiallyDeferred: true
-            onDelete: CASCADE
-            onUpdate: RESTRICT
-            referencedColumnNames: user_id
-            referencedTableName: users
-            validate: true

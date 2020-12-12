@@ -1,5 +1,5 @@
 package ru.inno.projects.models;
 
 public enum Role {
-    USER;
+    USER, ADMIN, MEMBER;
 }
