@@ -1,0 +1,116 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_table_users
+      author: gorinych3
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: users_pkey
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+              #                  constraints:
+              #                    nullable: false
+              - column:
+                  name: phone_number
+                  type: varchar(12)
+  - changeSet:
+      id: create_table_user_role
+      author: gorinych3
+      changes:
+        - createTable:
+            tableName: user_role
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_user_roles
+                    references: users
+              - column:
+                  name: roles
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create_table_events
+      author: gorinych3
+      changes:
+        - createTable:
+            tableName: events
+            columns:
+              - column:
+                  name: event_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: events_pkey
+                    nullable: false
+              - column:
+                  name: event_name
+                  type: varchar(255)
+                  constraints:
+              #                    nullable: false
+              - column:
+                  name: create_date
+                  type: timestamp
+                  constraints:
+  #                    nullable: false
+  - changeSet:
+      id: create_table_events_users
+      author: gorinych3
+      changes:
+        - createTable:
+            tableName: events_users
+            columns:
+              - column:
+                  name: event_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_event_user
+                    references: events
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_user_event
+                    references: users
+  - changeSet:
+      id: addForeignKeyConstraint-events_users
+      author: gorinych3
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: event_id
+            baseTableName: events
+            constraintName: fk_events_users
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            referencedColumnNames: user_id
+            referencedTableName: users
+            validate: true

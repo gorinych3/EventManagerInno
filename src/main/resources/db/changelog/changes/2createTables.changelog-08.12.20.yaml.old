@@ -26,7 +26,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: phone_number
-                  type: int
+                  type: varchar(12)
                   constraints:
                     nullable: true
               - column:
@@ -62,8 +62,8 @@ databaseChangeLog:
             tableName: events
             columns:
               - column:
-                  name: id
-                  type: BIGINT
+                  name: event_id
+                  type: bigint
                   autoIncrement: true
                   constraints:
                     primaryKey: true
@@ -74,12 +74,15 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_events_event_user
-                    references: event_user(id)
+                    foreignKeyName: fk_events_user
+                    references: event_user
               - column:
-                  name: role_id
-                  type: int
+                  name: event_name
+                  type: varchar(255)
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_events_event_role
-                    references: event_role(id)
+              - column:
+                  name: create_date
+                  type: datetime
+                  constraints:
+                    nullable: false
