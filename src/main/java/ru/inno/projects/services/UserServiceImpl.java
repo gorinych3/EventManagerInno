@@ -9,10 +9,8 @@ import ru.inno.projects.models.User;
 import ru.inno.projects.repos.UserRepo;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return null;
+        return userRepo.findAll();
     }
 
     @Override
@@ -45,17 +43,7 @@ public class UserServiceImpl implements UserService {
 
         userRepo.save(user);
 
-        final String message = String.format(
-                "Привет, %s! \n" +
-                        "Добро пожаловать в Event Manager. Для подтверждения регистрации перейдите по ссылке: " +
-                        "http://localhost:8080/activate/%s",
-                user.getUsername(),
-                user.getActivationCode()
-        );
-
-        if (!user.getEmail().isEmpty()) {
-            mailServise.send(user.getEmail(), "Activation code", message);
-        }
+        sendMessage(user);
 
         return true;
     }
@@ -76,8 +64,67 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUser(User user) {
-        return false;
+    public boolean updateUserRoles(User user, Map<String, String> form) {
+
+        Set<String> roles = Arrays.stream(Role.values())
+                .map(Role::name)
+                .collect(Collectors.toSet());
+
+        user.getRoles().clear();
+
+        for (String key : form.keySet()) {
+            if (roles.contains(key)) {
+                user.getRoles().add(Role.valueOf(key));
+            }
+        }
+
+        userRepo.save(user);
+
+        return true;
+    }
+
+    @Override
+    public boolean updateUser(User user, String password, String phoneNumber, String email) {
+        String userEmail = user.getEmail();
+
+        boolean isEmailChanged = (email != null && !email.equals(userEmail)) ||
+                (userEmail != null && !userEmail.equals(email));
+
+        if (isEmailChanged) {
+            user.setEmail(email);
+            if (email != null && email.isEmpty()) {
+                user.setActivationCode(UUID.randomUUID().toString());
+            }
+        }
+
+        if (!password.isEmpty()) {
+            user.setPassword(password);
+        }
+
+        if (!phoneNumber.isEmpty()) {
+            user.setPhoneNumber(phoneNumber);
+        }
+
+        userRepo.save(user);
+
+        if (isEmailChanged) {
+            sendMessage(user);
+        }
+
+        return true;
+    }
+
+    private void sendMessage(User user) {
+        if (!user.getEmail().isEmpty()) {
+            final String message = String.format(
+                    "Привет, %s! \n" +
+                            "Добро пожаловать в Event Manager. Для подтверждения регистрации перейдите по ссылке: " +
+                            "http://localhost:8080/activate/%s",
+                    user.getUsername(),
+                    user.getActivationCode()
+            );
+            mailServise.send(user.getEmail(), "Activation code", message);
+        }
     }
 
     @Override

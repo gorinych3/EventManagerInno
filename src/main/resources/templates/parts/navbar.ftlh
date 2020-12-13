@@ -6,6 +6,7 @@
         <a href="/user">Cписок</a>
         <a href="/registration">Регистрация</a>
         <a href="/login">Войти</a>
+        <a href="/user/profile">Profile</a>  <#--TODO:добавить сесурити!!!!!!!!!!!!!!!!!!!!-->
     </nav>
 <#--    <a class="btn" href="#">Что - то сделать!</a>-->
 </div>
