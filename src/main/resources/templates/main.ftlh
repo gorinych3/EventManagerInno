@@ -29,5 +29,8 @@
 <#--</main>-->
 
   <h2>Простая стартовая страница</h2>
+  <br>
+
+<#--<span><a href="/user/account">Account</a></span> &lt;#&ndash;  добавлено Ганзя&ndash;&gt;-->
 
 </@c.page>

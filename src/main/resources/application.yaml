@@ -16,6 +16,17 @@ spring:
     url: jdbc:postgresql://localhost:5433/event_manager?serverTimezone=Europe/Moscow
     username: inno
     password: inno
+  freemarker:
+    expose-request-attributes: true
+  mail:
+    host: smtp.yandex.ru
+    username: dk-st31-eventmanager@yandex.ru
+    #password: eventmanager
+    password: zmlquqcwfwqjymod
+    port: 465
+    protocol: smtps
+mail:
+  debug: true
 logging:
   level:
     liquibase: INFO
