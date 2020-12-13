@@ -17,9 +17,8 @@ public class MainController {
         this.userRepo = userRepo;
     }
 
-    @GetMapping
-    public String main(Model model) {
-        model.addAttribute("name", "user");
+    @GetMapping("/")
+    public String main() {
         return "main";
     }
 

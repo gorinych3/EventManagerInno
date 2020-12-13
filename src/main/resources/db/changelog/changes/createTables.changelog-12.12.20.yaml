@@ -1,0 +1,122 @@
+databaseChangeLog:
+  - changeSet:
+      id: dropTable-event_user
+      author: egor.ganzya
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: event_user
+  - changeSet:
+      id: dropTable-event_role
+      author: egor.ganzya
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: event_role
+  - changeSet:
+      id: dropTable-events
+      author: egor.ganzya
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: events
+  - changeSet:
+      id: create_table_users
+      author: egor.ganzya
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: users_pkey
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+              #                  constraints:
+              #                    nullable: false
+              - column:
+                  name: phone_number
+                  type: varchar(12)
+  - changeSet:
+      id: create_table_user_role
+      author: egor.ganzya
+      changes:
+        - createTable:
+            tableName: user_role
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_user_roles
+                    references: users
+              - column:
+                  name: roles
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create_table_events
+      author: egor.ganzya
+      changes:
+        - createTable:
+            tableName: events
+            columns:
+              - column:
+                  name: event_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: events_pkey
+                    nullable: false
+              - column:
+                  name: event_name
+                  type: varchar(255)
+                  constraints:
+              #                    nullable: false
+              - column:
+                  name: create_date
+                  type: timestamp
+                  constraints:
+  #                    nullable: false
+  - changeSet:
+      id: create_table_events_users
+      author: egor.ganzya
+      changes:
+        - createTable:
+            tableName: events_users
+            columns:
+              - column:
+                  name: event_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: events_pkey
+                    references: events
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_user_event
+                    references: users
