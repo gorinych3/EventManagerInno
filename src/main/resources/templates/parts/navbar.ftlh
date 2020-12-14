@@ -3,7 +3,7 @@
 <#--    <nav class="my-2 my-md-0 mr-md-3">-->
     <nav>
         <a href="/">Главная страница</a>
-        <a href="/list">Cписок</a>
+        <a href="/user">Cписок</a>
         <a href="/registration">Регистрация</a>
         <a href="/login">Войти</a>
     </nav>

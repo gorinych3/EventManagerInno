@@ -5,7 +5,7 @@
     <label for="inputUsername" class="sr-only">User</label>
     <input type="text" name="username" id="inputUsername" class="form-control" placeholder="name" required autofocus>
     <label for="inputEmail" class="sr-only">Email</label>
-    <input type="text" name="email" id="inputEmail" class="form-control" placeholder="Email" required autofocus>
+    <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email" required autofocus>
     <label for="inputPhone" class="sr-only">Phone</label>
     <input type="text" name="phoneNumber" id="inputPhone" class="form-control" placeholder="Phone" required autofocus>
     <label for="inputPassword" class="sr-only">Password</label>
@@ -13,7 +13,5 @@
     <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
     <input type="hidden" name="_csrf" value="${_csrf.token}" />
 </form>
-    <#if message??>
-        <h2>${message}</h2>
-    </#if>
+    ${message?ifExists}
 </@c.page>

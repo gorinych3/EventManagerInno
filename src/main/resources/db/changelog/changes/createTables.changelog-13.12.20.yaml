@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-user/activationCode
+      author: egor.ganzya
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: activation_code
+                  type: varchar(255)
+#changeSet:
+#  id: addColumn-user/activationCode
+#  author: egor.ganzya
+#  changes:
+#    - addColumn:
+#        tableName: person
+#          columns:
+#          - column:
+#              name: middlename
+#              type: varchar(50)

@@ -2,12 +2,12 @@ package ru.inno.projects.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.inno.projects.models.User;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.inno.projects.repos.UserRepo;
 
 @Controller
+@RequestMapping("/")
 public class MainController {
 
     private final UserRepo userRepo;
@@ -17,16 +17,10 @@ public class MainController {
         this.userRepo = userRepo;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public String main() {
+        System.out.println("MAIN");
         return "main";
-    }
-
-    @GetMapping("/list")
-    public String list(Model model) {
-        Iterable<User> users = userRepo.findAll();
-        model.addAttribute("users", users);
-        return "list";
     }
 
 }

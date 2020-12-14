@@ -1,16 +1,17 @@
 package ru.inno.projects.services;
 
 
+import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.inno.projects.models.User;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     List<User> getAllUsers();
 
-    User addUser(User user);
+    boolean addUser(User user);
 
     User getUserByLogin(String login);
 
@@ -24,4 +25,5 @@ public interface UserService {
 
     boolean deleteUserById(BigDecimal userId);
 
+    boolean activateUser(String code);
 }
