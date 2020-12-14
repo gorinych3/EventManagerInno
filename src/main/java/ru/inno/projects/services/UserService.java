@@ -6,6 +6,7 @@ import ru.inno.projects.models.User;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface UserService extends UserDetailsService {
 
@@ -19,7 +20,9 @@ public interface UserService extends UserDetailsService {
 
     User getUserById(BigDecimal userId);
 
-    boolean updateUser(User user);
+    boolean updateUserRoles(User user, Map<String, String> form);
+
+    boolean updateUser(User user, String password, String phoneNumber, String email);
 
     boolean deleteUser(User user);
 
