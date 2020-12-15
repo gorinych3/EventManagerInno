@@ -1,0 +1,32 @@
+spring:
+  # Настройка liquibase миграций
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  # Hibernate & JPA
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQL10Dialect
+    open-in-view: false
+  # Настройка подключения к базе
+  datasource:
+    #driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/event_manager?serverTimezone=Europe/Moscow
+    username: inno
+    password: inno
+  freemarker:
+    expose-request-attributes: true
+  mail:
+    host: smtp.yandex.ru
+    username: dk-st31-eventmanager@yandex.ru
+    #password: eventmanager
+    password: zmlquqcwfwqjymod
+    port: 465
+    protocol: smtps
+mail:
+  debug: true
+logging:
+  level:
+    liquibase: INFO
