@@ -1,6 +1,8 @@
 <#import "parts/common.ftlh" as c>
 <@c.page>
 
-<h1>Что-то пошло не так!!</h1>
+    <div class="alert alert-danger">
+        <strong>Упс.</strong> Что-то пошло не так.
+    </div>
 
 </@c.page>

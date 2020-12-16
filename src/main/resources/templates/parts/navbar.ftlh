@@ -1,12 +1,21 @@
-<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-    <h5 class="my-0 mr-md-auto font-weight-normal">Супер крутой - стартап 2020!</h5>
-<#--    <nav class="my-2 my-md-0 mr-md-3">-->
-    <nav>
-        <a href="/">Главная страница</a>
-        <a href="/user">Cписок</a>
-        <a href="/registration">Регистрация</a>
-        <a href="/login">Войти</a>
-        <a href="/user/profile">Profile</a>  <#--TODO:добавить сесурити!!!!!!!!!!!!!!!!!!!!-->
-    </nav>
-<#--    <a class="btn" href="#">Что - то сделать!</a>-->
-</div>
+<nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
+<#--    <a class="navbar-brand" href="#">Logo</a>-->
+    <h5 class="my-0 mr-md-auto font-weight-normal">Event менеджер</h5>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link <#if .main_template_name == "main.ftlh"> active</#if>" href="/">Главная страница</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <#if springMacroRequestContext.requestUri?contains("/user")> active</#if>" href="/user">Cписок</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <#if springMacroRequestContext.requestUri?contains("/registration")> active</#if>" href="/registration">Регистрация</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <#if springMacroRequestContext.requestUri?contains("/login")> active</#if>" href="/login">Войти</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <#if springMacroRequestContext.requestUri?contains("/user/profile")> active</#if>" href="/user/profile">Профиль</a>
+        </li>
+    </ul>
+</nav>

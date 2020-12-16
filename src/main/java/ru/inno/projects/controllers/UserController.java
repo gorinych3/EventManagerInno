@@ -58,6 +58,7 @@ public class UserController {
     public String getProfile(Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
+        model.addAttribute("phone_number", user.getPhoneNumber());
 
         return "profile";
     }
