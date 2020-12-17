@@ -1,5 +1,6 @@
 package ru.inno.projects.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -26,15 +28,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
+        log.info("Start method getAllUser from UserServiceImpl");
         return userRepo.findAll();
     }
 
     @Override
     public boolean addUser(User user) {
+        log.info("Start method addUser from UserServiceImpl");
 
         User userFromDb = userRepo.findByUsername(user.getUsername());
 
         if (!Objects.equals(userFromDb, null)) {
+            log.info("Пользователь пытается зарегистрироваться под уже существующим аккаунтом");
             return false;
         }
         user.setActive(false);
@@ -65,6 +70,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updateUserRoles(User user, Map<String, String> form) {
+        log.info("Start method updateUserRoles from UserServiceImpl");
 
         Set<String> roles = Arrays.stream(Role.values())
                 .map(Role::name)
@@ -85,6 +91,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updateUser(User user, String password, String phoneNumber, String email) {
+        log.info("Start method updateUser from UserServiceImpl");
         String userEmail = user.getEmail();
 
         boolean isEmailChanged = (email != null && !email.equals(userEmail)) ||
@@ -115,6 +122,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void sendMessage(User user) {
+        log.info("Start method sendMessage from UserServiceImpl");
+
         if (!user.getEmail().isEmpty()) {
             final String message = String.format(
                     "Привет, %s! \n" +
@@ -139,6 +148,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean activateUser(String code) {
+        log.info("Start method activateUser from UserServiceImpl");
+
         User user = userRepo.findByActivationCode(code);
         if (Objects.equals(user, null)) {
             return false;
@@ -151,6 +162,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        log.info("Start method loadUserByUsername from UserServiceImpl");
         User user = userRepo.findByUsername(userName);
         return user != null ? user : new User();
     }

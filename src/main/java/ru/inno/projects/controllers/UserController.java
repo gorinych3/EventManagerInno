@@ -1,5 +1,6 @@
 package ru.inno.projects.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +13,7 @@ import ru.inno.projects.services.UserService;
 
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -26,7 +28,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public String list(Model model) {
-        System.out.println("LIST");
+        log.info("Start method list from UserController");
         model.addAttribute("users", userService.getAllUsers());
         return "list";
     }
@@ -34,7 +36,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("{user}")
     public String userEditForm(@PathVariable User user, Model model) {
-        System.out.println("USER");
+        log.info("Start method userEditForm from UserController");
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
         return "userEdit";
@@ -46,7 +48,7 @@ public class UserController {
             @RequestParam String userName,
             @RequestParam Map<String, String> form,
             @RequestParam("userId") User user) {
-        System.out.println("SAVE USER");
+        log.info("Start method userSave from UserController");
         user.setUsername(userName);
 
         userService.updateUserRoles(user, form);
@@ -56,8 +58,10 @@ public class UserController {
 
     @GetMapping("profile")
     public String getProfile(Model model, @AuthenticationPrincipal User user) {
+        log.info("Start method getProfile from UserController");
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
+        model.addAttribute("phone_number", user.getPhoneNumber());
 
         return "profile";
     }
@@ -69,6 +73,7 @@ public class UserController {
             @RequestParam String phoneNumber,
             @RequestParam String email) {
 
+        log.info("Start method updateProfile from UserController");
         userService.updateUser(user, password, phoneNumber, email);
 
         return "redirect:/user/profile";
