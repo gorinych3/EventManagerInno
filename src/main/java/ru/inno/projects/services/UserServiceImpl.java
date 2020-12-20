@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.inno.projects.models.Role;
 import ru.inno.projects.models.User;
@@ -19,11 +20,15 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
     private final EventMailServise mailServise;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepo userRepo, EventMailServise mailServise) {
+    public UserServiceImpl(UserRepo userRepo,
+                           EventMailServise mailServise,
+                           PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.mailServise = mailServise;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -45,6 +50,7 @@ public class UserServiceImpl implements UserService {
         user.setActive(false);
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepo.save(user);
 
@@ -105,7 +111,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!password.isEmpty()) {
-            user.setPassword(password);
+            user.setPassword(passwordEncoder.encode(password));
         }
 
         if (!phoneNumber.isEmpty()) {
