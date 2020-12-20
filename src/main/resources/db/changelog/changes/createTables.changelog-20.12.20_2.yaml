@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: insertUsers
+      author: egor.ganzya
+      changes:
+        - sql:
+            sql: insert into users (username, password, active, email, phone_number) values('user', 'user', true, 'user@eventmanager.ru', '78888888888');
+  - changeSet:
+      id: insertAdminUser_Role
+      author: egor.ganzya
+      changes:
+        - sql:
+            sql: insert into user_role (user_id, roles) values(2, 'USER');
+  - changeSet:
+      id: updatePassword
+      author: egor.ganzya
+      changes:
+        - sql:
+            sql: update users set password = crypt(password, gen_salt('bf',8)) where username like 'user';
+  - changeSet:
+      id: insertEvents
+      author: egor.ganzya
+      changes:
+        - sql:
+            sql: insert into events (event_name, create_date) values('тестовый', NOW()::timestamp);
+        - sql:
+            sql: insert into events (event_name, create_date) values('админский', NOW()::timestamp);
+  - changeSet:
+      id: insertEventsUsers
+      author: egor.ganzya
+      changes:
+        - sql:
+            sql: insert into events_users values(1, 1), (1, 2), (2, 1);

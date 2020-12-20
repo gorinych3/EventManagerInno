@@ -16,6 +16,16 @@
                     <a class="nav-link <#if .main_template_name == "list.ftlh" || .main_template_name == "userEdit.ftlh"> active</#if>" href="/user">Администрирование пользователей</a>
                 </li>
             </#if>
+            <#if known>
+                <li class="nav-item">
+                    <a class="nav-link <#if .main_template_name == "eventList.ftlh"> active</#if>" href="/event">Все ивенты</a>
+                </li>
+            </#if>
+            <#if known>
+                <li class="nav-item">
+                    <a class="nav-link <#if .main_template_name == "currentUserEvents.ftlh"> active</#if>" href="/event/user">Мои ивенты</a>
+                </li>
+            </#if>
             <#if !known>
                 <li class="nav-item">
                     <a class="nav-link <#if .main_template_name == "registration.ftlh"> active</#if>" href="/registration">Регистрация</a>
