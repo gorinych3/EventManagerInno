@@ -7,8 +7,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.inno.projects.models.Event;
 import ru.inno.projects.models.Role;
 import ru.inno.projects.models.User;
+import ru.inno.projects.services.EventService;
 import ru.inno.projects.services.UserService;
 
 import java.util.Map;
@@ -19,10 +21,12 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final EventService eventService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, EventService eventService) {
         this.userService = userService;
+        this.eventService = eventService;
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -77,5 +81,14 @@ public class UserController {
         userService.updateUser(user, password, phoneNumber, email);
 
         return "redirect:/user/profile";
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("/event/{eventId}")
+    public String showEventsUsers(@PathVariable("eventId") long eventId, Model model) {
+        log.info("Start method list from showEventsUsers");
+        Event event = eventService.getEventById(eventId);
+        model.addAttribute("users", userService.getAllUsersByEvent(event));
+        return "usersFromEvent";
     }
 }

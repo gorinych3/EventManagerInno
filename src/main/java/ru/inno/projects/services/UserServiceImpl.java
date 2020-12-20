@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.inno.projects.models.Event;
 import ru.inno.projects.models.Role;
 import ru.inno.projects.models.User;
 import ru.inno.projects.repos.UserRepo;
@@ -72,6 +74,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(BigDecimal userId) {
         return null;
+    }
+
+    @Transactional
+    @Override
+    public Set<User> getAllUsersByEvent(Event event) {
+        return new HashSet<>(userRepo.findAllByEvents(event));
     }
 
     @Override

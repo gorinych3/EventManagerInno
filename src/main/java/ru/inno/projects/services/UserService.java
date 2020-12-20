@@ -2,11 +2,13 @@ package ru.inno.projects.services;
 
 
 import org.springframework.security.core.userdetails.UserDetailsService;
+import ru.inno.projects.models.Event;
 import ru.inno.projects.models.User;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface UserService extends UserDetailsService {
 
@@ -19,6 +21,8 @@ public interface UserService extends UserDetailsService {
     User getUserByName(String name);
 
     User getUserById(BigDecimal userId);
+
+    Set<User> getAllUsersByEvent(Event event);
 
     boolean updateUserRoles(User user, Map<String, String> form);
 

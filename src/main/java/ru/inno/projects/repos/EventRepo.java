@@ -8,10 +8,8 @@ import ru.inno.projects.models.User;
 import java.util.List;
 
 @Repository
-public interface UserRepo extends JpaRepository<User, Long> {
-    User findByUsername(String username);
+public interface EventRepo extends JpaRepository<Event, Long> {
 
-    User findByActivationCode(String code);
+    List<Event> findEventsByUsers(User user);
 
-    List<User> findAllByEvents(Event event);
 }
