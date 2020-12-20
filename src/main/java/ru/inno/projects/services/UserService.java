@@ -14,6 +14,8 @@ public interface UserService extends UserDetailsService {
 
     boolean addUser(User user);
 
+    boolean isUserExists(User user);
+
     User getUserByLogin(String login);
 
     User getUserByName(String name);
