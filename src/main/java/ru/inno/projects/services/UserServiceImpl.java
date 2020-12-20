@@ -36,12 +36,8 @@ public class UserServiceImpl implements UserService {
     public boolean addUser(User user) {
         log.info("Start method addUser from UserServiceImpl");
 
-        User userFromDb = userRepo.findByUsername(user.getUsername());
+        if (isUserExists(user)) return false;
 
-        if (!Objects.equals(userFromDb, null)) {
-            log.info("Пользователь пытается зарегистрироваться под уже существующим аккаунтом");
-            return false;
-        }
         user.setActive(false);
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
@@ -51,6 +47,16 @@ public class UserServiceImpl implements UserService {
         sendMessage(user);
 
         return true;
+    }
+
+    public boolean isUserExists(User user) {
+        User userFromDb = userRepo.findByUsername(user.getUsername());
+
+        if (!Objects.equals(userFromDb, null)) {
+            log.info("Пользователь пытается зарегистрироваться под уже существующим аккаунтом");
+            return true;
+        }
+        return false;
     }
 
     @Override

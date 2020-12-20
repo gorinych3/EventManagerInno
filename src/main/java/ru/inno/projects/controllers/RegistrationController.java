@@ -4,11 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.inno.projects.models.User;
 import ru.inno.projects.services.UserService;
+
+
+import javax.validation.Valid;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -29,12 +34,35 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String addUser(Model model, User user) {
+    public String addUser(@Valid User user, BindingResult bindingResult, Model model) {
         log.info("Start method addUser from RegistrationController");
-        if (!userService.addUser(user)) {
-            model.addAttribute("message", "User exist!");
+
+        boolean hasAnError = false;
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
+            model.mergeAttributes(errors);
+            hasAnError = true;
+        }
+
+        if (user.getPassword() != null && !user.getPassword().equals(user.getPassword2())) {
+            model.addAttribute("password2Error", "Повтор пароля не совпадает.");
+            hasAnError = true;
+        }
+
+        if (userService.isUserExists(user)) {
+            model.addAttribute("usernameError", "Такой пользователь уже существует.");
+            hasAnError = true;
+        }
+
+        if (hasAnError){
             return "registration";
         }
+
+        if (!userService.addUser(user)) {
+            model.addAttribute("errorMessage", "Что-то пошло не так во время регистрации.");
+            return "registration";
+        }
+
         return "redirect:/login";
     }
 

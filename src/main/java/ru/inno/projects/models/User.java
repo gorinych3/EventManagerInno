@@ -6,6 +6,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
@@ -19,12 +23,28 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = IDENTITY)
     private Long userId;
 
+    @NotBlank(message = "Имя пользователя не может быть пустым.")
+    @Pattern(regexp = "[A-Za-z0-9._-]*", message = "Имя может быть написано только латиницей и содержать цифры, а также символы ._-.")
+    @Size(min = 1, max = 40, message = "Максимальная длина имени 40 символов.")
     private String username;
 
+    @NotBlank(message = "Пароль не может быть пустым.")
     private String password;
+
+    @Transient
+    @NotBlank(message = "Повторение пароля не может быть пустым.")
+    private String password2;
+
     private boolean active;
+
+    @Email(message = "Email не соответствует стандарту.")
+    @NotBlank(message = "Email не может быть пустым.")
     private String email;
+
+    @Pattern(regexp = "^(?:8|\\+)[0-9\\s.\\/-]{6,20}$", message = "Номер должен начинаться с 8 или с +7.")
+    @NotBlank(message = "Телефонный номер не может быть пустым.")
     private String phoneNumber;
+
     private String activationCode;
     @ManyToMany(mappedBy = "users")
     private Set<Event> events;
