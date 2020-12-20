@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: insertAdminUsers
+      author: egor.ganzya
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: admin
+              - column:
+                  name: password
+                  value: admin
+              - column:
+                  name: active
+                  value: true
+              - column:
+                  name: email
+                  value: dk-st31-eventmanager@yandex.ru
+              - column:
+                  name: phone_number
+                  value: 79999999999
+  - changeSet:
+      id: insertAdminUser_Role
+      author: egor.ganzya
+      changes:
+        - sql:
+            sql: insert into user_role (user_id, roles) values(1, 'USER');
+        - sql:
+            sql: insert into user_role (user_id, roles) values(1, 'ADMIN');
+  - changeSet:
+      id: updatePassword
+      author: egor.ganzya
+      changes:
+        - sql:
+            sql: CREATE EXTENSION pgcrypto;
+        - sql:
+            sql: update users set password = crypt(password, gen_salt('bf',8)) where username like 'admin';
