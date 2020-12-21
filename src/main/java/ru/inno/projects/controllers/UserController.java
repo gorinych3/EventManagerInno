@@ -6,6 +6,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.inno.projects.models.Event;
 import ru.inno.projects.models.Role;
@@ -13,6 +16,9 @@ import ru.inno.projects.models.User;
 import ru.inno.projects.services.EventService;
 import ru.inno.projects.services.UserService;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -63,22 +69,36 @@ public class UserController {
     @GetMapping("profile")
     public String getProfile(Model model, @AuthenticationPrincipal User user) {
         log.info("Start method getProfile from UserController");
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("email", user.getEmail());
-        model.addAttribute("phone_number", user.getPhoneNumber());
+        model.addAttribute(user);
 
         return "profile";
     }
 
     @PostMapping("profile")
-    public String updateProfile(
-            @AuthenticationPrincipal User user,
-            @RequestParam String password,
-            @RequestParam String phoneNumber,
-            @RequestParam String email) {
+    public String updateProfile(@AuthenticationPrincipal User user, @Valid User userToSave, BindingResult bindingResult, Model model) {
 
         log.info("Start method updateProfile from UserController");
-        userService.updateUser(user, password, phoneNumber, email);
+
+        boolean hasAnError = false;
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
+            errors.remove("usernameError");
+            if (!errors.isEmpty()) {
+                model.mergeAttributes(errors);
+                hasAnError = true;
+            }
+        }
+
+        if (userToSave.getPassword() != null && !userToSave.getPassword().equals(userToSave.getPassword2())) {
+            model.addAttribute("password2Error", "Повтор пароля не совпадает.");
+            hasAnError = true;
+        }
+
+        if (hasAnError){
+            return "profile";
+        }
+
+        userService.updateUser(user, userToSave.getPassword(), userToSave.getPhoneNumber(), userToSave.getEmail());
 
         return "redirect:/user/profile";
     }

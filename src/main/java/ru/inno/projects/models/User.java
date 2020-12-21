@@ -35,7 +35,6 @@ public class User implements UserDetails {
     private String password;
 
     @Transient
-    @NotBlank(message = "Повторение пароля не может быть пустым.")
     private String password2;
 
     private boolean active;
