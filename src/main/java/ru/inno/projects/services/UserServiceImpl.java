@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.inno.projects.models.Event;
+import ru.inno.projects.models.Invitation;
 import ru.inno.projects.models.Role;
 import ru.inno.projects.models.User;
 import ru.inno.projects.repos.UserRepo;
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
         return userRepo.findAll();
     }
 
+
     @Override
     public boolean addUser(User user) {
         log.info("Start method addUser from UserServiceImpl");
@@ -50,6 +52,7 @@ public class UserServiceImpl implements UserService {
         user.setActivationCode(UUID.randomUUID().toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+
         userRepo.save(user);
 
         sendMessage(user);
@@ -58,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean isUserExists(User user) {
-        User userFromDb = userRepo.findByUsername(user.getUsername());
+        User userFromDb = userRepo.findUserByEmail(user.getEmail());
 
         if (!Objects.equals(userFromDb, null)) {
             log.info("Пользователь пытается зарегистрироваться под уже существующим аккаунтом");
@@ -81,6 +84,22 @@ public class UserServiceImpl implements UserService {
     public User getUserById(BigDecimal userId) {
         return null;
     }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepo.findUserByEmail(email);
+    }
+
+    @Override
+    public List<User> getAllByInvitationsInvited(Invitation invitation) {
+        return null;
+    }
+
+    @Override
+    public List<User> getAllByInvitationsInvitor(Invitation invitation) {
+        return null;
+    }
+
 
     @Transactional
     @Override

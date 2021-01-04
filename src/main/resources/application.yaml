@@ -25,6 +25,10 @@ spring:
     password: zmlquqcwfwqjymod
     port: 465
     protocol: smtps
+  session:
+    jdbc:
+      initialize-schema: always
+      table-name: SPRING_SESSION
 mail:
   debug: true
 logging:

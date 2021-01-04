@@ -13,7 +13,7 @@
         <tbody>
         <#list events as event>
             <tr>
-                <td>${event.eventName}</td>
+                <td><a href="/event/${event.eventId}">${event.eventName}</a></td>
                 <td>${event.createDate}</td>
                 <td><a href="/user/event/${event.eventId}">просмотр участников ивента</a></td>
             </tr>

@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1609655819012-1
+      author: vladimir.drugov
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: accepted
+                  type: bool
+            tableName: invitations
+  - changeSet:
+      id: 1609655819012-2
+      author: vladimir.drugov
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: informed
+                  type: bool
+            tableName: invitations

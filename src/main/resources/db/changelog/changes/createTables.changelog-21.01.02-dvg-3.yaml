@@ -1,0 +1,110 @@
+databaseChangeLog:
+  - changeSet:
+      id: invitationsCreationCorrectWay
+      author: vladimir.drugov
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: invitations_invited_users_pkey
+                  name: invitation_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: invitations_invited_users_pkey
+                  name: user_id
+                  type: BIGINT
+            tableName: invitations_invited_users
+  - changeSet:
+      id: invitationsCreationCorrectWay-1
+      author: vladimir.drugov
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: invitations_pkey
+                  name: invitation_id
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: event_id
+                  type: BIGINT
+            tableName: invitations
+  - changeSet:
+      id: invitationsCreationCorrectWay-2
+      author: vladimir.drugov
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: invitations_invitor_users_pkey
+                  name: invitation_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: invitations_invitor_users_pkey
+                  name: user_id
+                  type: BIGINT
+            tableName: invitations_invitor_users
+  - changeSet:
+      id: invitationsCreationCorrectWay-3
+      author: vladimir.drugov
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: invitations_invitor_users
+            constraintName: fkgvbvoqqgvgns7u59xm743bf83
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: user_id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: invitationsCreationCorrectWay-4
+      author: vladimir.drugov
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: invitation_id
+            baseTableName: invitations_invitor_users
+            constraintName: fktm8ek83pgwo53bt871h5wast9
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: invitation_id
+            referencedTableName: invitations
+            validate: true
+  - changeSet:
+      id: invitationsCreationCorrectWay-5
+      author: vladimir.drugov
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: invitation_id
+            baseTableName: invitations_invited_users
+            constraintName: fk4cur5yqgcgp2l8xe4cg70pc6n
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: invitation_id
+            referencedTableName: invitations
+            validate: true
