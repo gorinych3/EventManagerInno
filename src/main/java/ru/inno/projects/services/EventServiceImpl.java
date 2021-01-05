@@ -51,4 +51,9 @@ public class EventServiceImpl implements EventService {
         eventRepo.save(event);
         return true;
     }
+
+    @Override
+    public Event save(Event event) {
+        return eventRepo.save(event);
+    }
 }

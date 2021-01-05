@@ -17,6 +17,6 @@ public interface InvitationRepo extends JpaRepository<Invitation, Long> {
 
     Invitation findInvitationByInvitedUserAndEvent(User user, Event event);
 
-    List<Invitation> findAllByEvent(Event event);
+   // List<Invitation> findAllByEvent(Event event);
 
 }
