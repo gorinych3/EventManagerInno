@@ -31,4 +31,9 @@ public class Event {
             inverseJoinColumns = {@JoinColumn(name = "event_id")}
     )
     private Set<User> users = new HashSet<>();
+
+    // Много приглашений может соответствовать одному событию
+    @OneToMany(mappedBy="event")
+    private Set<Invitation> invitations;
+
 }

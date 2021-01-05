@@ -3,6 +3,7 @@ package ru.inno.projects.services;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.inno.projects.models.Event;
+import ru.inno.projects.models.Invitation;
 import ru.inno.projects.models.User;
 
 import java.math.BigDecimal;
@@ -35,4 +36,10 @@ public interface UserService extends UserDetailsService {
     boolean deleteUserById(BigDecimal userId);
 
     boolean activateUser(String code);
+
+    User getUserByEmail(String email);
+
+    List<User> getAllByInvitationsInvited(Invitation invitation);
+
+    List<User> getAllByInvitationsInvitor(Invitation invitation);
 }

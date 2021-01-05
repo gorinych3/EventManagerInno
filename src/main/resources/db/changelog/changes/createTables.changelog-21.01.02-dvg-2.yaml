@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: invitationsSetRemove
+      author: vladimir.drugov
+      changes:
+        - sql:
+            sql: drop table invitations
+        - sql:
+            sql: drop table invitations_invited_users
+        - sql:
+            sql: drop table invitations_invitor_users

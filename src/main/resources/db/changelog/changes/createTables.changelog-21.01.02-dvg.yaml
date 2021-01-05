@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: invitationsSet
+      author: vladimir.drugov
+      changes:
+        - sql:
+            sql: create table invitations (invitation_id int8 not null, creation_date timestamp, event_id int8 not null, primary key (invitation_id))
+        - sql:
+            sql: create table invitations_invited_users (invitation_id int8 not null, user_id int8 not null, primary key (invitation_id, user_id))
+        - sql:
+            sql: create table invitations_invitor_users (invitation_id int8 not null, user_id int8 not null, primary key (invitation_id, user_id))

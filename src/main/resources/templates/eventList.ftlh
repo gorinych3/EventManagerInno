@@ -12,7 +12,7 @@
         <tbody>
         <#list events as event>
             <tr>
-                <td>${event.eventName}</td>
+                <td><a href="/event/${event.eventId}">${event.eventName}</a></td>
                 <td>${event.createDate}</td>
             </tr>
         </#list>
