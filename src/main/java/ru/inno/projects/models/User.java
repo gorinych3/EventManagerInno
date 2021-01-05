@@ -48,7 +48,7 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     private String activationCode;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "events_users",
             joinColumns = {@JoinColumn(name = "event_id")},
@@ -60,6 +60,20 @@ public class User implements UserDetails {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
+
+    public User() {
+    }
+
+    public User(@NotBlank(message = "Имя пользователя не может быть пустым.") @Pattern(regexp = "[A-Za-z0-9._-]*", message = "Имя может быть написано только латиницей и содержать цифры, а также символы ._-.") @Size(min = 1, max = 40, message = "Максимальная длина имени 40 символов.") String username, @NotBlank(message = "Пароль не может быть пустым.") String password, boolean active, @Email(message = "Email не соответствует стандарту.") @NotBlank(message = "Email не может быть пустым.") String email, @Pattern(regexp = "^(?:8|\\+)[0-9\\s.\\/-]{6,20}$", message = "Номер должен начинаться с 8 или с +7.") @NotBlank(message = "Телефонный номер не может быть пустым.") String phoneNumber, String activationCode, Set<Event> events, Set<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.active = active;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.activationCode = activationCode;
+        this.events = events;
+        this.roles = roles;
+    }
 
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);

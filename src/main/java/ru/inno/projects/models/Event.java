@@ -24,11 +24,24 @@ public class Event {
 
     private LocalDateTime createDate;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "events_users",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "event_id")}
     )
     private Set<User> users = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(name = "action_id")
+    private Action action;
+
+    //пробуем просто one2many без всяких уточнений
+    @OneToMany/*(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})*/
+    @JoinColumn(name = "event_id")
+    private Set<Team> teams = new HashSet<>();
+
+//    @OneToMany
+//    @JoinColumn(name = "event_id")
+//    private Set<PlayAction> playActions = new HashSet<>();
 }

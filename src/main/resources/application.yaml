@@ -1,13 +1,13 @@
 spring:
   # Настройка liquibase миграций
   liquibase:
-    enabled: true
+    enabled: false
     change-log: classpath:db/changelog/db.changelog-master.yaml
   # Hibernate & JPA
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     properties.hibernate.dialect: org.hibernate.dialect.PostgreSQL10Dialect
     open-in-view: false
   # Настройка подключения к базе
