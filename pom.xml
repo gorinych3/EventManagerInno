@@ -68,6 +68,11 @@
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-jdbc</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.6</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -77,33 +82,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.liquibase</groupId>-->
-<!--                <artifactId>liquibase-maven-plugin</artifactId>-->
-<!--                <version>${liquibase.version}</version>-->
-<!--                <configuration>-->
-<!--                    <changeLogFile>${project.basedir}/src/main/resources/db/changelog/db.changelog-master.yaml</changeLogFile>-->
-<!--                    <url>jdbc:postgresql://localhost:5433/event_manager?serverTimezone=Europe/Moscow</url>-->
-<!--                    <username>inno</username>-->
-<!--                    <password>inno</password>-->
-<!--                    <referenceUrl>jdbc:postgresql://localhost:5434/event_manager?serverTimezone=Europe/Moscow</referenceUrl>-->
-<!--                    <referenceUsername>inno</referenceUsername>-->
-<!--                    <referencePassword>inno</referencePassword>-->
-<!--                    <outputChangeLogFile>dbchangelog.yaml</outputChangeLogFile>-->
-<!--                </configuration>-->
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>org.liquibase.ext</groupId>-->
-<!--                        <artifactId>liquibase-hibernate5</artifactId>-->
-<!--                        <version>3.6</version>-->
-<!--                    </dependency>-->
-<!--                    <dependency>-->
-<!--                        <groupId>org.springframework.boot</groupId>-->
-<!--                        <artifactId>spring-boot-starter-data-jpa</artifactId>-->
-<!--                        <version>2.2.0.RELEASE</version>-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 </project>

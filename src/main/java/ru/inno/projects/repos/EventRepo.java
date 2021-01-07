@@ -13,5 +13,5 @@ public interface EventRepo extends JpaRepository<Event, Long> {
 
     List<Event> findEventsByUsers(User user);
 
-    List<Event> findEventsByInvitations(Invitation invitation);
+    //List<Event> findEventsByInvitations(Invitation invitation);
 }

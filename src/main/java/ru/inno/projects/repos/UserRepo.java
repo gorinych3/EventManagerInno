@@ -18,7 +18,7 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     List<User> findAllByEvents(Event event);
 
-    List<User> findAllByInvitationsUserInvited(Invitation invitation);
-
-    List<User> findAllByInvitationsUserInvitor(Invitation invitation);
+//    List<User> findAllByInvitationsUserInvited(Invitation invitation);
+//
+//    List<User> findAllByInvitationsUserInvitor(Invitation invitation);
 }

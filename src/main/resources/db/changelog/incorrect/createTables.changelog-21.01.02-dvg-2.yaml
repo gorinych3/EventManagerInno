@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: invitationsSetRemove
+      author: vladimir.drugov
+      changes:
+        - sql:
+            sql: drop table if exists invitations
+        - sql:
+            sql: drop table if exists invitations_invited_users
+        - sql:
+            sql: drop table if exists invitations_invitor_users

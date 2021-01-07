@@ -17,4 +17,7 @@ public interface EventService {
     Event getEventByEventName(String eventName);
 
     boolean addEvent(Event event, Set<User> users);
+
+    Event save(Event event);
+
 }

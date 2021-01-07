@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_event_members
+      author: artur
+      changes:
+        - createTable:
+            tableName: members
+            columns:
+              - column:
+                  name: member_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: member_pkey
+                    nullable: false
+              - column:
+                  name: event_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    constraints:
+                      primaryKeyName: pk_events
+                      references: events
+              - column:
+                  name: member_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
