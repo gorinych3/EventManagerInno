@@ -71,6 +71,14 @@ public class User implements UserDetails {
     )
     private Set<Team> teams = new HashSet<>();
 
+//    // Один пользователь может иметь несколько приглашений
+//    @OneToMany(mappedBy="invitedUser")
+//    private Set<Invitation> invitationsUserInvited;
+//
+//    // Один пользователь может создать несколько приглашений
+//    @OneToMany(mappedBy="invitorUser")
+//    private Set<Invitation> invitationsUserInvitor;
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)

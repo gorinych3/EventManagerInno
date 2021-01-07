@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1609703082794-3
+      author: vladimir.drugov
+      changes:
+        - addColumn:
+            columns:
+            - column:
+                name: invited_user_id
+                type: int8
+            tableName: invitations
+  - changeSet:
+      id: 1609703082794-4
+      author: vladimir.drugov
+      changes:
+        - addColumn:
+            columns:
+            - column:
+                constraints:
+                  nullable: false
+                name: invitor_user_id
+                type: int8
+            tableName: invitations
+  - changeSet:
+      id: 1609703082794-1
+      author: vladimir.drugov
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: invited_user_id
+            baseTableName: invitations
+            constraintName: fk3scq49jdy7n080nadkfdywhsh
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: user_id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1609703082794-2
+      author: vladimir.drugov
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: invitor_user_id
+            baseTableName: invitations
+            constraintName: fk9jy7865w9awq43uj9tkw2opgo
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: user_id
+            referencedTableName: users
+            validate: true

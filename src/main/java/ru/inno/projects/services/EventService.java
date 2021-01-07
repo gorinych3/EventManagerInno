@@ -24,4 +24,7 @@ public interface EventService {
     boolean startAction(long eventId);
 
     public Set<User> createUserList(int countUser, Event event);
+
+    Event save(Event event);
+
 }

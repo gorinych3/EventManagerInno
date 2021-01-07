@@ -23,7 +23,17 @@
             </#if>
             <#if known>
                 <li class="nav-item">
+                    <a class="nav-link <#if .main_template_name == "eventRegistration.ftlh"> active</#if>" href="/event/create">Создание эвента</a>
+                </li>
+            </#if>
+            <#if known>
+                <li class="nav-item">
                     <a class="nav-link <#if .main_template_name == "currentUserEvents.ftlh"> active</#if>" href="/event/user">Мои ивенты</a>
+                </li>
+            </#if>
+            <#if known>
+                <li class="nav-item">
+                    <a class="nav-link <#if .main_template_name == "currentUserInvitations.ftlh"> active</#if>" href="/invitations/user">Мои приглашения</a>
                 </li>
             </#if>
             <#if !known>
@@ -34,6 +44,7 @@
         </ul>
 
         <#if known>
+            Привет, ${user.username}&nbsp;&nbsp;
             <@l.logout/>
         <#else>
             <a class="btn btn-primary" href="/login">Войти</a>

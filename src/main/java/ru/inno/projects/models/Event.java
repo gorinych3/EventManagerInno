@@ -6,9 +6,12 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.List;
 import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -31,6 +34,15 @@ public class Event {
     @ManyToMany(fetch = FetchType.LAZY/*, cascade = CascadeType.ALL*/)/*(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})*/
     @Fetch(FetchMode.SUBSELECT)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    public Event() {
+    }
+
+    public Event(String eventName, LocalDateTime createDate) {
+        this.eventName = eventName;
+        this.createDate = createDate;
+    }
+
+    @ManyToMany
     @JoinTable(
             name = "events_users",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -56,5 +68,17 @@ public class Event {
     @Override
     public int hashCode() {
         return Objects.hash(eventId, eventName, createDate/*, action*/);
+    }
+
+    // Много приглашений может соответствовать одному событию
+//    @OneToMany(mappedBy="event")
+//    private Set<Invitation> invitations;
+
+    @OneToMany(mappedBy = "event")
+    //@OneToMany(mappedBy="event")
+    private List<Member> members;
+
+    public long getEventId() {
+        return eventId;
     }
 }
