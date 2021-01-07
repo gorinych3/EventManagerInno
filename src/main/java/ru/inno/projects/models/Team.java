@@ -1,14 +1,18 @@
 package ru.inno.projects.models;
 
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-@Table(name = "teams")
+@Table(name = "teams", schema = "PUBLIC")
 public class Team {
 
     @Id
@@ -17,12 +21,33 @@ public class Team {
 
     private String teamName;
 
-    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "team_id")
-    private Set<User> teamUsers = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "teams_users",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "team_id")}
+    )
+    private Set<User> users = new HashSet<>();
 
-//    @OneToMany
-//    @JoinColumn(name = "team_id")
-//    private Set<PlayAction> playActions = new HashSet<>();
+    @OneToOne(mappedBy = "master")
+    private PlayAction playActionMaster;
 
+    @OneToOne(mappedBy = "slave")
+    private PlayAction playActionSlave;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Team team = (Team) o;
+        return teamId == team.teamId
+                && Objects.equals(teamName, team.teamName)
+                && Objects.equals(playActionMaster, team.playActionMaster)
+                && Objects.equals(playActionSlave, team.playActionSlave);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(teamId, teamName, playActionMaster, playActionSlave);
+    }
 }

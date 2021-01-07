@@ -42,29 +42,29 @@ class EventServiceImplTest {
     void tearDown() {
     }
 
-    @Ignore
-    @Transactional
-    @Test
-    void createTeams() {
-        List<User> users = new ArrayList<>();
-
-        if (saveUsers(createUserList(new Event()))) {
-            Event event = new Event();
-            event.setUsers(new HashSet<>(createUserList(new Event())));
-            event.setEventName("test");
-            event.setCreateDate(LocalDateTime.now());
-
-            System.out.println("попытка сохранить ивент");
-            eventRepo.save(event);
-            System.out.println("ивент сохранен");
-
-            users = createUserList(event);
-        }
-
-        assertTrue(eventService.createTeams(users));
-
-
-    }
+//    @Ignore
+//    @Transactional
+//    @Test
+//    void createTeams() {
+//        List<User> users = new ArrayList<>();
+//
+//        if (saveUsers(createUserList(new Event()))) {
+//            Event event = new Event();
+//            event.setUsers(new HashSet<>(createUserList(new Event())));
+//            event.setEventName("test");
+//            event.setCreateDate(LocalDateTime.now());
+//
+//            System.out.println("попытка сохранить ивент");
+//            eventRepo.save(event);
+//            System.out.println("ивент сохранен");
+//
+//            users = createUserList(event);
+//        }
+//
+//        assertTrue(eventService.createTeams(users));
+//
+//
+//    }
 
     private List<User> createUserList(Event event) {
         List<User> users = new ArrayList<>();

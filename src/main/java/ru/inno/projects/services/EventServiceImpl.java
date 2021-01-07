@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.inno.projects.models.*;
+import ru.inno.projects.repos.ActionRepo;
 import ru.inno.projects.repos.EventRepo;
 import ru.inno.projects.repos.UserRepo;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -19,11 +19,16 @@ public class EventServiceImpl implements EventService {
 
     private final UserRepo userRepo;
 
+    private final ActionRepo actionRepo;
+
     @Autowired
-    public EventServiceImpl(EventRepo eventRepo, UserRepo userRepo) {
+    public EventServiceImpl(EventRepo eventRepo, UserRepo userRepo, ActionRepo actionRepo) {
         this.eventRepo = eventRepo;
         this.userRepo = userRepo;
+        this.actionRepo = actionRepo;
     }
+
+
 
     @Override
     public List<Event> getAllEvents() {
@@ -47,115 +52,91 @@ public class EventServiceImpl implements EventService {
         return null;
     }
 
+    @Transactional
     @Override
     public boolean addEvent(Event event, Set<User> users) {
-        event.setUsers(users);
-        eventRepo.save(event);
-        return true;
-    }
+        //users = new HashSet<>(userRepo.findAll());
 
-    @Override
-    public boolean addEvent(Event event, Set<User> users, Action action) {
-        event.setUsers(users);
-        event.setAction(action);
+//        for (User user : users){
+//            System.out.println(user.getUsername() + "    " + user.getUserId());
+//            event.getUsers().add(user);
+//            user.getEvents().add(event);
+//        }
+        System.out.println("Пытаемся сохранить ивент!!!!!!!!!!!!!!");
         eventRepo.save(event);
         return true;
     }
 
     @Transactional
     @Override
-    public boolean createTeams(long eventId) {
+    public boolean addEvent(Event event, Action action) {
+        List<User> users = userRepo.findAll();
+        System.out.println(users);
+        event.setUsers(new HashSet<>(users));
+        event = eventRepo.save(event);
+        //action = actionRepo.save(action);
+        //event.setAction(action);
+        //eventRepo.save(event);
+        return true;
+    }
+
+    @Transactional
+    @Override
+    public boolean startAction(long eventId) {
+        //1 получить ивент. Нужно понять, что нам может передать клиент, скорее всего либо имя ивента, либо Id
         Event event = eventRepo.getOne(eventId);
-        Action action = event.getAction();
-        List<User> users = new ArrayList<>(event.getUsers());
-
-        List<Team> teams;
-
-        //если задано количество команд и не задано количество игроков в команде
-        if (action.getTeams() != 0 && action.getPlayersOnTeam() == 0 && action.getTeams() < users.size()) {
-            //необходимо разбить общее количество игроков на команды
-            teams = new ArrayList<>(action.getTeams());
-            Collections.shuffle(users);
-            for (int i = 1; i <= action.getTeams(); i++){
+        //2 получить action из ивента и определить логику реализации экшена
+        //Action action = event.getAction();
+        Action action = new Action();
+        action.setActionName("testAction");
+        action.setDescription("Пробуем для начала создать вручную");
+        //3 реализовать экшен в зависимости от содержания полей
+        List<Team> teams = new ArrayList<>();
+        Set<User> users = event.getUsers();
+        Set<PlayAction> playActionSet = new HashSet<>();
+        //если нет заданного количества команд или количества игроков в командах, то это цепь (лига, санта)
+        if(action.getTeams() == 0 && action.getPlayersOnTeam() == 0) {
+            for (User user : users) {
                 Team team = new Team();
-                team.setTeamName("team" + i);
-                Set<User> userSet = new HashSet<>();
-                for (int j = 0; j < users.size(); j++){
-                    if (users.size() % action.getTeams() == 0) {
-                        userSet.add(users.get(j));
-                    }
-                }
-                team.setTeamUsers(userSet);
+                team.setTeamName(user.getUsername());
+                team.setUsers(new HashSet<>(Collections.singletonList(user)));
                 teams.add(team);
             }
+            Collections.shuffle(teams);
 
+
+
+            PlayAction playActionfirstLast = new PlayAction();
+            playActionfirstLast.setMaster(teams.get(teams.size() - 1));
+            playActionfirstLast.setSlave(teams.get(0));
+
+            playActionSet.add(playActionfirstLast);
+            for (int i = 1; i <= teams.size(); i++) {
+                PlayAction playAction = new PlayAction();
+                if (i != teams.size()) {
+                    playAction.setMaster(teams.get(i - 1));
+                    playAction.setSlave(teams.get(i));
+                    playActionSet.add(playAction);
+                }
+            }
         }
-
-        return false;
-    }
-
-    @Transactional
-    @Override
-    public boolean createTeams(List<User> users) {
-        System.out.println("Start createTeams !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        users = createUserList(new Event());
-        saveUsers(users);
-        Event event = new Event();
-        event.setUsers(new HashSet<>(createUserList(new Event())));
-        event.setEventName("test");
-        event.setCreateDate(LocalDateTime.now());
-
-//        System.out.println("попытка сохранить ивент");
-//        eventRepo.saveAndFlush(event);
-//        System.out.println("ивент сохранен");
-        Set<Team> teams = new HashSet<>();
-        Team team1 = new Team();
-        Team team2 = new Team();
-        team1.setTeamName("team1");
-        team2.setTeamName("team2");
-
-        List<User> userSet1 = users.subList(0, (users.size() / 2) - 1);
-        List<User> userSet2 = users.subList(users.size() - users.size() / 2, users.size());
-
-        team1.setTeamUsers(new HashSet<>(userSet1));
-        team2.setTeamUsers(new HashSet<>(userSet2));
-
-        teams.add(team1);
-        teams.add(team2);
-
-        event.setTeams(teams);
-
+        //4 занести данные в таблицы
+        action.setPlayActions(playActionSet);
+        event.setAction(action);
+        actionRepo.save(action);
         eventRepo.save(event);
-
-        return true;
-    }
-
-    @Override
-    public boolean createRounds(String action) {
+        //5 вернуть какое то отображение клиенту
         return false;
     }
 
-    private List<User> createUserList(Event event) {
+    @Override
+    public Set<User> createUserList(int countUser, Event event) {
         List<User> users = new ArrayList<>();
-        users.add(new User("user", "123", true, "hjf@jgj.com", "+71111111111",
-                null, new HashSet<>(Collections.singletonList(event)), new HashSet<>(Collections.singletonList(Role.USER))));
-        users.add(new User("user1", "123", true, "hjf1@jgj.com", "+71111111111",
-                null, new HashSet<>(Collections.singletonList(event)), new HashSet<>(Collections.singletonList(Role.USER))));
-        users.add(new User("user2", "123", true, "hjf2@jgj.com", "+71111111111",
-                null, new HashSet<>(Collections.singletonList(event)), new HashSet<>(Collections.singletonList(Role.USER))));
-        users.add(new User("user3", "123", true, "hjf3@jgj.com", "+71111111111",
-                null, new HashSet<>(Collections.singletonList(event)), new HashSet<>(Collections.singletonList(Role.USER))));
-        users.add(new User("user4", "123", true, "hjf4@jgj.com", "+71111111111",
-                null, new HashSet<>(Collections.singletonList(event)), new HashSet<>(Collections.singletonList(Role.USER))));
-        return users;
-    }
-
-
-    private boolean saveUsers(List<User> users) {
-        for (User user : users) {
-            userRepo.saveAndFlush(user);
+        for (int i = 0; i < countUser; i++) {
+            users.add(i, new User("user" + i, "123" + i, true, "hjf@jgj" + i + ".com", "+711111111" + i,
+                    null, new HashSet<>(Collections.singletonList(Role.USER))));
         }
-        return true;
+        return new HashSet<>(users);
     }
 
 
@@ -195,41 +176,57 @@ public class EventServiceImpl implements EventService {
 //        }
 //    }
 
-    public static void main(String [] args) {
-        Set<User> usersInit = new HashSet<>();
-        Event event = new Event();
-        List<Team> teams;
-        List<User> users = new ArrayList<>(usersInit);
-
-        for (int i = 0; i < 20; i++) {
-            users.add(i, new User("user" + i, "123" + i, true, "hjf@jgj" + i + ".com", "+711111111" + i,
-                    null, new HashSet<>(Collections.singletonList(event)), new HashSet<>(Collections.singletonList(Role.USER))));
+    private boolean saveUsers(List<User> users) {
+        for (User user : users) {
+            userRepo.saveAndFlush(user);
         }
-        int countTeams = usersInit.size();
-        teams = new ArrayList<>(countTeams);
-        int sizeTeam = users.size()/countTeams;
-        //Collections.shuffle(users);
-        for (int i = 0; i <= countTeams; i++) {
-            Team team = new Team();
-            team.setTeamName("team" + i);
-            Set<User> userSet = new HashSet<>();
-            int lastUser = 0;
-
-            for(int j = users.size() - sizeTeam * i; j > 0; j--){
-                userSet.add(users.get(j));
-            }
-
-            team.setTeamUsers(userSet);
-            teams.add(team);
-        }
-
-        for(Team team : teams){
-            System.out.println("==================================================================");
-            System.out.println(team.getTeamName());
-            System.out.println(team.getTeamUsers().size());
-            for (User user : team.getTeamUsers()){
-                System.out.println(user.getUsername());
-            }
-        }
+        return true;
     }
+
+//    public static void main(String[] args) {
+//        Set<User> usersInit = new HashSet<>();
+//        Event event = new Event();
+//        List<Team> teams = new ArrayList<>();
+//        List<User> users = new ArrayList<>(usersInit);
+//
+//        for (int i = 0; i < 19; i++) {
+//            users.add(i, new User("user" + i, "123" + i, true, "hjf@jgj" + i + ".com", "+711111111" + i,
+//                    null, new HashSet<>(Collections.singletonList(event)), new HashSet<>(Collections.singletonList(Role.USER))));
+//        }
+//        for (User user : users) {
+//            Team team = new Team();
+//            team.setTeamName(user.getUsername());
+//            team.setTeamUsers(new HashSet<>(Collections.singletonList(user)));
+//            teams.add(team);
+//        }
+//        Collections.shuffle(teams);
+//
+//        Set<PlayAction> playActionSet = new HashSet<>();
+//
+//        PlayAction playActionfirstLast = new PlayAction();
+//        playActionfirstLast.setMaster(teams.get(teams.size()-1));
+//        playActionfirstLast.setSlave(teams.get(0));
+//
+//        playActionSet.add(playActionfirstLast);
+//        for (int i = 1; i <= teams.size(); i++) {
+//            PlayAction playAction = new PlayAction();
+//            if(i != teams.size()) {
+//                playAction.setMaster(teams.get(i-1));
+//                playAction.setSlave(teams.get(i));
+//                playActionSet.add(playAction);
+//            }
+//        }
+//
+//
+//        for (Team team : teams) {
+//            System.out.println("==================================================================");
+//            System.out.println(team.getTeamName());
+//        }
+//
+//        for (PlayAction playAction : playActionSet) {
+//            System.out.println("==================================================================");
+//            System.out.println(playAction.getMaster() + " -> " + playAction.getSlave());
+//        }
+//    }
+
 }

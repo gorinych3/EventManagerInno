@@ -1,19 +1,23 @@
 package ru.inno.projects.models;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-@Table(name = "events")
-@EqualsAndHashCode(exclude = {"users"})
+@Table(name = "events", schema = "PUBLIC")
 public class Event {
 
     @Id
@@ -24,7 +28,9 @@ public class Event {
 
     private LocalDateTime createDate;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY/*, cascade = CascadeType.ALL*/)/*(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})*/
+    @Fetch(FetchMode.SUBSELECT)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @JoinTable(
             name = "events_users",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -32,16 +38,23 @@ public class Event {
     )
     private Set<User> users = new HashSet<>();
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "action_id")
     private Action action;
 
-    //пробуем просто one2many без всяких уточнений
-    @OneToMany/*(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})*/
-    @JoinColumn(name = "event_id")
-    private Set<Team> teams = new HashSet<>();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return eventId == event.eventId
+                && Objects.equals(eventName, event.eventName)
+                && Objects.equals(createDate, event.createDate)
+                /*&& Objects.equals(action, event.action)*/;
+    }
 
-//    @OneToMany
-//    @JoinColumn(name = "event_id")
-//    private Set<PlayAction> playActions = new HashSet<>();
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventId, eventName, createDate/*, action*/);
+    }
 }

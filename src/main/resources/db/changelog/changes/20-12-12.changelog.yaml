@@ -101,22 +101,38 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
   #                    nullable: false
+#  - changeSet:
+#      id: create_table_events_users
+#      author: egor.ganzya
+#      changes:
+#        - createTable:
+#            tableName: events_users
+#            columns:
+#              - column:
+#                  name: event_id
+#                  type: bigint
+#                  constraints:
+#                    foreignKeyName: fk9kmcoy2u0tyold6dcq9lo3lrr
+#                    references: events
+#              - column:
+#                  name: user_id
+#                  type: bigint
+#                  constraints:
+#                    foreignKeyName: fkanp4jsiv3rhts3ynm29e6c3vn
+#                    references: users
   - changeSet:
-      id: create_table_events_users
+      id: create_new_events_users
       author: egor.ganzya
       changes:
-        - createTable:
-            tableName: events_users
-            columns:
-              - column:
-                  name: event_id
-                  type: bigint
-                  constraints:
-                    foreignKeyName: events_pkey
-                    references: events
-              - column:
-                  name: user_id
-                  type: bigint
-                  constraints:
-                    foreignKeyName: fk_user_event
-                    references: users
+        - sql:
+            sql: create table events_users
+              (
+              user_id  bigint not null
+              constraint fkanp4jsiv3rhts3ynm29e6c3vn
+              references events,
+              event_id bigint not null
+              constraint fk9kmcoy2u0tyold6dcq9lo3lrr
+              references users,
+              constraint events_users_pkey
+              primary key (user_id, event_id)
+              );

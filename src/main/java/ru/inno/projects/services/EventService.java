@@ -19,11 +19,9 @@ public interface EventService {
 
     boolean addEvent(Event event, Set<User> users);
 
-    boolean addEvent(Event event, Set<User> users, Action action);
+    boolean addEvent(Event event, Action action);
 
-    boolean createTeams(long eventId);
+    boolean startAction(long eventId);
 
-    boolean createTeams(List<User> users);
-
-    boolean createRounds(String action);
+    public Set<User> createUserList(int countUser, Event event);
 }

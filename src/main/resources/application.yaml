@@ -1,15 +1,18 @@
 spring:
   # Настройка liquibase миграций
   liquibase:
-    enabled: false
+    enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
   # Hibernate & JPA
   jpa:
     show-sql: true
-    hibernate:
-      ddl-auto: create-drop
-    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQL10Dialect
     open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
   # Настройка подключения к базе
   datasource:
     #driver-class-name: org.postgresql.Driver
@@ -30,3 +33,7 @@ mail:
 logging:
   level:
     liquibase: INFO
+    org:
+      hibernate:
+        type: TRACE
+#    org.springframework.web: TRACE
