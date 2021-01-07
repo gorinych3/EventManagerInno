@@ -6,18 +6,23 @@
         <tr>
             <th>Название ивента</th>
             <th>Дата создания</th>
-            <th>Участники</th>
-            <th></th>
+
         </tr>
         </thead>
         <tbody>
+        <#if events?size gt 0>
         <#list events as event>
             <tr>
                 <td><a href="/event/${event.eventId}">${event.eventName}</a></td>
                 <td>${event.createDate}</td>
-                <td><a href="/user/event/${event.eventId}">просмотр участников ивента</a></td>
+
             </tr>
         </#list>
+        <#else>
+        <tr>
+            <td colspan="2"><h5><span class="badge badge-secondary">Вы пока не создали ни одного ивента. <a href="/event/create">Создать Ивент.</a> </span></h5></td>
+        </tr>
+        </#if>
         </tbody>
     </table>
 </@c.page>

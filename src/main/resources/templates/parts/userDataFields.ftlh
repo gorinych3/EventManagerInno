@@ -3,7 +3,7 @@
         <input type="email" name="email" id="inputEmail"
                class="form-control  ${(emailError??)?string('is-invalid', '')}"
                placeholder="Введите ваш Email" required autofocus
-               value="<#if user??>${user.email}</#if><#if userToSave??>${userToSave.email}</#if>"
+               value="<#if user??>${user.email}</#if><#if userToSave??>${userToSave.email}</#if><#if emailValue??>${emailValue}</#if>"
         >
         <#if emailError??>
             <div class="invalid-feedback">

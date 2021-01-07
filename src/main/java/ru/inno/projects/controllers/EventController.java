@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.inno.projects.models.Invitation;
 import ru.inno.projects.models.Member;
 import ru.inno.projects.models.User;
 import ru.inno.projects.repos.MemberRepo;
@@ -73,7 +74,12 @@ public class EventController {
     @GetMapping("{event}")
     public String showEvent(@PathVariable Event event, @AuthenticationPrincipal User user, Model model) {
         log.info("Start method showEvent");
+
         model.addAttribute("event", event);
+
+        List<Invitation> invitationsByEvent = invitationService.getInvitationsByEvent(event);
+        model.addAttribute("invitations", invitationsByEvent);
+
         return "eventPage";
     }
 
@@ -90,7 +96,7 @@ public class EventController {
             return "eventPage";
         }
 
-        return "redirect:/invitations/user";
+        return "redirect:/event/" + event.getEventId();
     }
 
     @GetMapping("/create")
@@ -114,10 +120,9 @@ public class EventController {
         Event savedEvent = eventService.save(newEvent);
         array.forEach((m) ->
         {
-            m.setEvent(savedEvent);
-            memberRepo.save(m);
+            invitationService.sendInvitation(savedEvent, user, m.getEmail());
         });
         model.addAttribute("event",savedEvent);
-        return "eventPage";
+        return "redirect:/event/" + savedEvent.getEventId();
     }
 }

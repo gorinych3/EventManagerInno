@@ -1,0 +1,11 @@
+databaseChangeLog:
+    - changeSet:
+          id: email_invitation_adding
+          author: vladimir.drugov
+          changes:
+              - addColumn:
+                    columns:
+                        - column:
+                              name: email_invitation
+                              type: VARCHAR(255)
+                    tableName: invitations
