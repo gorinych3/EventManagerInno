@@ -20,7 +20,6 @@ public class Member {
     @Column(name = "member_id")
     private Long Id;
 
-    @NotBlank(message = "Имя пользователя не может быть пустым.")
     private String memberName;
 
     @NotBlank(message = "Email не может быть пустым.")
