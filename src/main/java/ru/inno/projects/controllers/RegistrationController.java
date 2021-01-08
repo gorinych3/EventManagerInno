@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.inno.projects.models.User;
+import ru.inno.projects.services.InvitationService;
 import ru.inno.projects.services.UserService;
 
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Slf4j
@@ -20,16 +22,25 @@ import java.util.Map;
 public class RegistrationController {
 
     private UserService userService;
+    private InvitationService invitationService;
 
     @Autowired
-    public RegistrationController(UserService userService) {
+    public RegistrationController(UserService userService, InvitationService invitationService) {
         this.userService = userService;
+        this.invitationService = invitationService;
     }
 
     @GetMapping("/registration")
     public String registration() {
         log.info("Start method registration from RegistrationController");
-        System.out.println("Вызов registration контроллера");
+        return "registration";
+    }
+
+    @GetMapping("/registration/invitation/{email}")
+    public String registrationInvitation(Model model, @PathVariable String email) {
+        log.info("Start method registration from RegistrationController");
+        model.addAttribute("infoMessage", "Вы сможете подтвердить участие в ивенте сразу после регистрации при использовании того же имейла, на который Вам пришло приглашение");
+        model.addAttribute("emailValue", email);
         return "registration";
     }
 
@@ -58,10 +69,13 @@ public class RegistrationController {
             return "registration";
         }
 
-        if (!userService.addUser(user)) {
+        User savedUser = userService.addUser(user);
+        if (savedUser == null) {
             model.addAttribute("errorMessage", "Что-то пошло не так во время регистрации.");
             return "registration";
         }
+
+        invitationService.updateInvitationsOnAddingNewUser(savedUser);
 
         return "redirect:/login";
     }

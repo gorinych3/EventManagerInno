@@ -15,7 +15,7 @@ public interface UserService extends UserDetailsService {
 
     List<User> getAllUsers();
 
-    boolean addUser(User user);
+    User addUser(User user);
 
     boolean isUserExists(User user);
 

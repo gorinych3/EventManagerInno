@@ -16,7 +16,7 @@
                     <a class="nav-link <#if .main_template_name == "list.ftlh" || .main_template_name == "userEdit.ftlh"> active</#if>" href="/user">Администрирование пользователей</a>
                 </li>
             </#if>
-            <#if known>
+            <#if isAdmin>
                 <li class="nav-item">
                     <a class="nav-link <#if .main_template_name == "eventList.ftlh"> active</#if>" href="/event">Все ивенты</a>
                 </li>
@@ -44,7 +44,7 @@
         </ul>
 
         <#if known>
-            Привет, ${user.username}&nbsp;&nbsp;
+            Привет, ${user.username}.<#if invitationService.getAmountOfNotReadInvitationsForCurrentUser() gt 0>&nbsp;<a href="/invitations/user">Новых приглашений: ${invitationService.getAmountOfNotReadInvitationsForCurrentUser()}</a></#if>&nbsp;
             <@l.logout/>
         <#else>
             <a class="btn btn-primary" href="/login">Войти</a>

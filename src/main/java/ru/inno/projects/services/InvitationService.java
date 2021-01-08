@@ -14,7 +14,21 @@ public interface InvitationService {
 
     List<Invitation> getInvitationsByInvitorUser(User user);
 
-    List<Invitation> getAllByEvent(Event event);
+    List<Invitation> getInvitationsByEvent(Event event);
 
     boolean sendInvitation(Event event, User invitorUser, String email);
+
+    int updateInvitationsOnAddingNewUser(User user);
+
+    Invitation markInvitationRead(Invitation invitation);
+
+    Invitation markInvitationAccepted(Invitation invitation);
+
+    Invitation markInvitationUnAccepted(Invitation invitation);
+
+    int getAmountOfNotReadInvitations(User user);
+
+    int getAmountOfNotReadInvitationsForCurrentUser();
+
+
 }

@@ -24,6 +24,8 @@ public class Invitation {
 
     private Boolean informed;
 
+    private String emailInvitation;
+
     // Много приглашений может соответствовать одному событию
     @ManyToOne
     @JoinColumn(name="event_id", nullable=false)

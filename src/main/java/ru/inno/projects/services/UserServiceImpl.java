@@ -23,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
     private final EventMailServise mailServise;
+
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -42,22 +43,21 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public boolean addUser(User user) {
+    public User addUser(User user) {
         log.info("Start method addUser from UserServiceImpl");
 
-        if (isUserExists(user)) return false;
+        if (isUserExists(user)) return null;
 
         user.setActive(false);
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        User savedUser = userRepo.save(user);
 
-        userRepo.save(user);
+        sendMessage(savedUser);
 
-        sendMessage(user);
-
-        return true;
+        return savedUser;
     }
 
     public boolean isUserExists(User user) {

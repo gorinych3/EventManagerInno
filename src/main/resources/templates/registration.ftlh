@@ -6,6 +6,11 @@
             ${errorMessage}
         </div>
     </#if>
+    <#if infoMessage??>
+        <div class="alert alert-info">
+            ${infoMessage}
+        </div>
+    </#if>
 <form action ="/registration" method = "post">
     <div class="form-group">
         <label for="inputUsername">Имя*</label>

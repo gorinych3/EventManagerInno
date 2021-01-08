@@ -10,12 +10,18 @@
         </tr>
         </thead>
         <tbody>
+        <#if events?size gt 0>
         <#list events as event>
             <tr>
                 <td><a href="/event/${event.eventId}">${event.eventName}</a></td>
                 <td>${event.createDate}</td>
             </tr>
         </#list>
+        <#else>
+        <tr>
+            <td colspan="3"><h5><span class="badge badge-secondary">Список пуст.</span></h5></td>
+        </tr>
+        </#if>
         </tbody>
     </table>
 </@c.page>
