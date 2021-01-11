@@ -73,6 +73,8 @@ public class InvitationServiceImpl implements InvitationService {
             }
         }
 
+
+
         invitation.setEvent(event);
         invitation.setInvitorUser(invitorUser);
         invitation.setAccepted(false);

@@ -8,13 +8,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
 import ru.inno.projects.models.Action;
 import ru.inno.projects.models.Event;
+import ru.inno.projects.models.PlayAction;
 import ru.inno.projects.models.User;
+import ru.inno.projects.services.ActionService;
 import ru.inno.projects.services.EventService;
 import ru.inno.projects.services.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -29,42 +32,62 @@ public class Start implements CommandLineRunner {
     @Autowired
     EventService eventService;
 
-
-
+    @Autowired
+    ActionService actionService;
 
     //@Transactional
     @Override
     public void run(String... args){
-//        eventService.startAction(1);
+        //eventService.startAction(1);
 //        Event event = eventService.getEventById(1);
 //        System.out.println("Получили ивент!!!!");
 //        System.out.println(event.getEventName());
 //        System.out.println(event.getAction().getActionName());
 //        System.out.println(event.getAction().getPlayActions().size());
 
-        Action action = new Action();
+        //-------------------------------------------------------------------------------
+
         Event event = new Event();
-        event.setEventName("testWithAction");
+        event.setEventName("testWithAction5");
         event.setCreateDate(LocalDateTime.now());
 
-        action.setActionName("test Action");
-        action.setDescription("Пробуем добавить");
-        action.setPlayersOnTeam(0);
-        action.setTeams(0);
+        //eventService.save(event, null, null);
 
-
-        Set<User> users = eventService.createUserList(5, event);
-        for (User user : users){
-            event.getUsers().add(user);
-            user.getEvents().add(event);
-        }
-        action.setEvent(event);
-        event.setAction(action);
 
         //eventService.addEvent(event, action);
-        eventService.addEvent(event, users);
+        //eventService.addEvent(event, users);
         //eventService.addEvent(event, new HashSet<>());
 
 
+        //-------------------------------------------------------------------------------------------
+        /*
+        List<Event> eventList = eventService.getAllEvents();
+
+        for(Event event1 : eventList){
+            System.out.println(event1.getEventName());
+            if(event1.getAction() != null) {
+                Action findedAction = actionService.getActionByEvent(event1);
+
+                System.out.println("=====================================================================");
+                System.out.println("Наименование экшена " + findedAction.getActionName());
+                System.out.println();
+                Set<PlayAction> playActionSet = actionService.getAllPlayActionsByAction(findedAction);
+                System.out.println("Успешно получили список playActionSet");
+                System.out.println();
+                for (PlayAction playAction : playActionSet){
+                    System.out.println("ПОПЫТКА ПОЛУЧИТЬ ТИМЫ СО СВЯЗЬЮ ЕГЕРЯ");
+                    System.out.println(playAction.getMaster().getTeamName());
+                    for (User user : playAction.getMaster().getUsers()){
+                        System.out.println("\t" + user.getUsername());
+                    }
+                    System.out.println(playAction.getSlave().getTeamName());
+                    for (User user : playAction.getSlave().getUsers()) {
+                        System.out.println("\t" + user.getUsername());
+                    }
+                }
+
+            }else System.out.println("Нет экшена");
+        }
+         */
     }
 }

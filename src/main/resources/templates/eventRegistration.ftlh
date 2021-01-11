@@ -10,6 +10,10 @@
                     <input type="text" name="eventName" class="form-control" placeholder="Event name" />
                     <label class="col-sm-2 col-form-label">Дата эвента:</label>
                     <input type="datetime-local" name="createDate" class="form-control" placeholder="Event createDate"/>
+                    <label class="col-sm-2 col-form-label">Количество команд:</label>
+                    <input type="number" name="teams" class="form-control" placeholder="number of teams"/>
+                    <label class="col-sm-2 col-form-label">Количество участников в команде:</label>
+                    <input type="number" name="playersOnTeam" class="form-control" placeholder="number of players in the team"/>
                     <input type="hidden" id="membersJSON" name = "membersJSON" value=""/>
                 </div>
             </div>

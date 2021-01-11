@@ -1,10 +1,12 @@
 package ru.inno.projects.models;
 
-import lombok.*;
-import org.hibernate.annotations.Cascade;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -30,11 +32,12 @@ public class Action {
 
     private int playersOnTeam = 0;
 
-    @OneToOne(mappedBy = "action", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "action", fetch = FetchType.LAZY, cascade =
+            {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Event event;
 
-    @OneToMany(mappedBy = "action", fetch = FetchType.EAGER)
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "action", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SUBSELECT)
     private Set<PlayAction> playActions = new HashSet<>();
 
     @Override

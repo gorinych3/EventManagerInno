@@ -1,7 +1,10 @@
 package ru.inno.projects.models;
 
-import lombok.*;
-import org.hibernate.annotations.Cascade;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -21,7 +24,8 @@ public class Team {
 
     private String teamName;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     @JoinTable(
             name = "teams_users",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -41,13 +45,11 @@ public class Team {
         if (o == null || getClass() != o.getClass()) return false;
         Team team = (Team) o;
         return teamId == team.teamId
-                && Objects.equals(teamName, team.teamName)
-                && Objects.equals(playActionMaster, team.playActionMaster)
-                && Objects.equals(playActionSlave, team.playActionSlave);
+                && Objects.equals(teamName, team.teamName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(teamId, teamName, playActionMaster, playActionSlave);
+        return Objects.hash(teamId, teamName);
     }
 }

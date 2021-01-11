@@ -1,7 +1,8 @@
 package ru.inno.projects.models;
 
-import lombok.*;
-import org.hibernate.annotations.Cascade;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -17,23 +18,17 @@ public class PlayAction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long playActionId;
 
-    @OneToOne
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "master_team_id")
     private Team master;
 
-    @OneToOne
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "slave_team_id")
     private Team slave;
 
-    @ManyToOne
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH,
-            org.hibernate.annotations.CascadeType.MERGE,
-            org.hibernate.annotations.CascadeType.PERSIST,
-            org.hibernate.annotations.CascadeType.REFRESH,
-            org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-    @JoinColumn(name="action_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade =
+            {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "action_id")
     private Action action;
 
     @Override
@@ -43,12 +38,11 @@ public class PlayAction {
         PlayAction that = (PlayAction) o;
         return playActionId == that.playActionId
                 && Objects.equals(master, that.master)
-                && Objects.equals(slave, that.slave)
-                && Objects.equals(action, that.action);
+                && Objects.equals(slave, that.slave);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(playActionId, master, slave, action);
+        return Objects.hash(playActionId, master, slave);
     }
 }

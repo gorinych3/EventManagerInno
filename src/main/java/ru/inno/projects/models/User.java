@@ -1,10 +1,9 @@
 package ru.inno.projects.models;
 
 
-import lombok.*;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.inno.projects.repos.InvitationRepo;
@@ -54,14 +53,8 @@ public class User implements UserDetails {
 
     private String activationCode;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY/*, cascade = CascadeType.ALL*/)/*(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})*/
-    @Fetch(FetchMode.SUBSELECT)
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-//    @JoinTable(
-//            name = "events_users",
-//            joinColumns = {@JoinColumn(name = "user_id")},
-//            inverseJoinColumns = {@JoinColumn(name = "event_id")}
-//    )
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Set<Event> events = new HashSet<>();
 
     @ManyToMany
@@ -133,26 +126,6 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return isActive();
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     @Override
