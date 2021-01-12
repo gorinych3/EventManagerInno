@@ -1,23 +1,18 @@
 databaseChangeLog:
+
 #  - changeSet:
-#      id: addConstraint
+#      id: dropAllTables
 #      author: egor.ganzya
 #      changes:
 #        - sql:
-#            sql: ALTER  TABLE  events_users  ADD  CONSTRAINT events_users_pkey primary key (user_id, event_id);
-  - changeSet:
-      id: dropAllTables
-      author: egor.ganzya
-      changes:
-        - sql:
-            sql: DROP TABLE IF EXISTS events_users CASCADE;
-              DROP TABLE IF EXISTS user_role CASCADE;
-              DROP TABLE IF EXISTS users CASCADE;
-              DROP TABLE IF EXISTS events CASCADE;
-              DROP TABLE IF EXISTS teams_users CASCADE;
-              DROP TABLE IF EXISTS teams CASCADE;
-              DROP TABLE IF EXISTS play_actions CASCADE;
-              DROP TABLE IF EXISTS actions CASCADE;
+#            sql: DROP TABLE IF EXISTS events_users CASCADE;
+#              DROP TABLE IF EXISTS user_role CASCADE;
+#              DROP TABLE IF EXISTS users CASCADE;
+#              DROP TABLE IF EXISTS events CASCADE;
+#              DROP TABLE IF EXISTS teams_users CASCADE;
+#              DROP TABLE IF EXISTS teams CASCADE;
+#              DROP TABLE IF EXISTS play_actions CASCADE;
+#              DROP TABLE IF EXISTS actions CASCADE;
   - changeSet:
       id: create_new_users
       author: egor.ganzya
@@ -121,14 +116,14 @@ databaseChangeLog:
         - sql:
             sql: create table events_users
               (
-              user_id  bigint not null
-              constraint fkanp4jsiv3rhts3ynm29e6c3vn
-              references events,
               event_id bigint not null
-              constraint fk9kmcoy2u0tyold6dcq9lo3lrr
+              constraint fkd46my3jbxrdmcd3m2dryyc295
+              references events,
+              user_id  bigint not null
+              constraint fk4qi1ew1ii81ipjy5p3oy5ypeq
               references users,
               constraint events_users_pkey
-              primary key (user_id, event_id)
+              primary key (event_id, user_id)
               );
   - changeSet:
       id: create_new_user_role

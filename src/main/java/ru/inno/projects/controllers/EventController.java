@@ -122,15 +122,15 @@ public class EventController {
         return "redirect:/event/" + savedEvent.getEventId();
     }
 
-    @PostMapping("/startEvent{eventId}")
+    @PostMapping("/start_event")
     public String startEvent(@AuthenticationPrincipal User user,
-                             @PathVariable(value = "eventId") long eventId, Model model) {
+                             @RequestParam(value = "eventId") long eventId, Model model) {
         Event resultEvent = eventService.startAction(eventId);
         //уточнить, куда направляем и что передаем в модель
         //передаем команды и списки участников в командах, play actions и сам ивент
         model.addAttribute("event", resultEvent);
         model.addAttribute("action", resultEvent.getAction());
         model.addAttribute("playActions", resultEvent.getAction().getPlayActions());
-        return "eventPage";
+        return "eventResultPage";
     }
 }

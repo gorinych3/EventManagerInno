@@ -71,21 +71,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByLogin(String login) {
-        return null;
-    }
-
-    @Override
-    public User getUserByName(String name) {
-        return null;
-    }
-
-    @Override
-    public User getUserById(BigDecimal userId) {
-        return null;
-    }
-
-    @Override
     public User getUserByEmail(String email) {
         return userRepo.findUserByEmail(email);
     }
@@ -99,7 +84,6 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllByInvitationsInvitor(Invitation invitation) {
         return null;
     }
-
 
     @Transactional
     @Override

@@ -20,12 +20,6 @@ public interface UserService extends UserDetailsService {
 
     boolean isUserExists(User user);
 
-    User getUserByLogin(String login);
-
-    User getUserByName(String name);
-
-    User getUserById(BigDecimal userId);
-
     Set<User> getAllUsersByEvent(Event event);
 
     List<Member> getAllMembersByEvent(Event event);

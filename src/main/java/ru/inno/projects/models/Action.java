@@ -57,4 +57,15 @@ public class Action {
     public int hashCode() {
         return Objects.hash(actionId, actionName, description, teams, playersOnTeam, event);
     }
+
+    @Override
+    public String toString() {
+        return "Action{" +
+                "actionId=" + actionId +
+                ", actionName='" + actionName + '\'' +
+                ", description='" + description + '\'' +
+                ", teams=" + teams +
+                ", playersOnTeam=" + playersOnTeam +
+                '}';
+    }
 }

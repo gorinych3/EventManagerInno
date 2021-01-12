@@ -22,11 +22,8 @@ import java.util.*;
 public class EventServiceImpl implements EventService {
 
     private final EventRepo eventRepo;
-
     private final UserRepo userRepo;
-
     private final ActionRepo actionRepo;
-
     private final PlayActionRepo playActionRepo;
 
     @Autowired
@@ -36,7 +33,6 @@ public class EventServiceImpl implements EventService {
         this.actionRepo = actionRepo;
         this.playActionRepo = playActionRepo;
     }
-
 
     @Override
     public List<Event> getAllEvents() {
@@ -54,7 +50,6 @@ public class EventServiceImpl implements EventService {
     public Event getEventById(long eventId) {
         return eventRepo.getOne(eventId);
     }
-
 
     @Transactional
     @Override
@@ -84,12 +79,20 @@ public class EventServiceImpl implements EventService {
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public Event startAction(long eventId) {
+        log.info("startAction method");
         Event event = eventRepo.getOne(eventId);
-        Action action = actionRepo.findActionByEvent(event);
-        Set<PlayAction> playActionSet;
+        Action action = event.getAction();
+        Set<PlayAction> playActionSet = new HashSet<>(playActionRepo.findAllPlayActionsByAction(action));
+        for (PlayAction playAction : playActionSet) {
+            playActionRepo.delete(playAction);
+        }
+        playActionSet.clear();
         Set<User> users = event.getUsers();
+
         if (!users.isEmpty()) {
             //если нет заданного количества команд или количества игроков в командах, то это цепь (лига, санта)
+            log.info("get teams = " + action.getTeams());
+            log.info("get getPlayersOnTeam = " + action.getPlayersOnTeam());
             if (action.getTeams() == 0 && action.getPlayersOnTeam() == 0) {
                 playActionSet = santaRealization(event.getAction(), users);
             } else {
@@ -181,13 +184,20 @@ public class EventServiceImpl implements EventService {
     }
 
     @Transactional
-    @Scheduled(cron = "0 0 0 * * ?")   //каждую ночь = "0 0 0 * * ?",  один раз в 2 минуты = "0 */2 * ? * *"
+    @Scheduled(cron = "0 0 0 * * ?")
+    // каждую ночь: cron = "0 0 0 * * ?",  один раз в 2 минуты: cron = "0 */2 * ? * *"
+    // для тестов fixedRate = 60000, initialDelay = 180000
     public void checkEventExpire() {
         log.info("Start scheduled");
         List<Event> events = eventRepo.findEventsByCreateDateBefore(LocalDateTime.now());
         for (Event event : events) {
-            System.out.println(event.getEventName());
-            startAction(event.getEventId());
+            Action action = event.getAction();
+            if (action != null) {
+                List<PlayAction> playActions = playActionRepo.findAllPlayActionsByAction(action);
+                if (playActions == null || playActions.isEmpty()) {
+                    startAction(event.getEventId());
+                }
+            }
         }
     }
 
@@ -208,5 +218,6 @@ public class EventServiceImpl implements EventService {
         }
         return new HashSet<>(users);
     }
+
 
 }
