@@ -1,5 +1,6 @@
 package ru.inno.projects.services;
 
+import ru.inno.projects.models.Action;
 import ru.inno.projects.models.Event;
 import ru.inno.projects.models.User;
 
@@ -14,10 +15,10 @@ public interface EventService {
 
     Event getEventById(long eventId);
 
-    Event getEventByEventName(String eventName);
+    Event startAction(long eventId);
 
-    boolean addEvent(Event event, Set<User> users);
+    Set<User> createUserList(int countUser, Event event);
 
-    Event save(Event event);
+    Event save(Event event, Integer teams, Integer playersOnTeam);
 
 }

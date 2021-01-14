@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.inno.projects.models.Event;
 import ru.inno.projects.models.Invitation;
 import ru.inno.projects.models.User;
+import ru.inno.projects.repos.EventRepo;
 import ru.inno.projects.repos.InvitationRepo;
 import ru.inno.projects.repos.UserRepo;
 
@@ -18,17 +20,16 @@ import java.util.List;
 @Service
 public class InvitationServiceImpl implements InvitationService {
 
-    private InvitationRepo invitationRepo;
-    private final EventService eventService;
-    private UserRepo userRepo;
+    private final InvitationRepo invitationRepo;
+    private final UserRepo userRepo;
+    private final EventRepo eventRepo;
+
 
     @Autowired
-    public InvitationServiceImpl(InvitationRepo invitationRepo, EventService eventService, UserRepo userRepo) {
-
+    public InvitationServiceImpl(InvitationRepo invitationRepo, UserRepo userRepo, EventRepo eventRepo) {
         this.invitationRepo = invitationRepo;
-
-        this.eventService = eventService;
         this.userRepo = userRepo;
+        this.eventRepo = eventRepo;
     }
 
     @Override
@@ -56,22 +57,23 @@ public class InvitationServiceImpl implements InvitationService {
         Invitation invitation = new Invitation();
 
         User userToInvite = userRepo.findUserByEmail(email);
-        if(userToInvite == null){
+        if (userToInvite == null) {
             log.info("User with the email does not exist");
             invitation.setEmailInvitation(email);
             Invitation invitationByEmailInvitationAndEvent = invitationRepo.findInvitationByEmailInvitationAndEvent(email, event);
-            if(invitationByEmailInvitationAndEvent != null) {
+            if (invitationByEmailInvitationAndEvent != null) {
                 log.info("This user already invited to the event");
                 return false;
             }
         } else {
             invitation.setInvitedUser(userToInvite);
             Invitation invitationByInvitedUserAndEvent = invitationRepo.findInvitationByInvitedUserAndEvent(userToInvite, event);
-            if(invitationByInvitedUserAndEvent != null) {
+            if (invitationByInvitedUserAndEvent != null) {
                 log.info("This user already invited to the event");
                 return false;
             }
         }
+
 
         invitation.setEvent(event);
         invitation.setInvitorUser(invitorUser);
@@ -87,8 +89,8 @@ public class InvitationServiceImpl implements InvitationService {
     @Override
     public int updateInvitationsOnAddingNewUser(User user) {
         List<Invitation> invitationsToUpdate = invitationRepo.findInvitationsByEmailInvitation(user.getEmail());
-        for (Invitation invitation:
-             invitationsToUpdate) {
+        for (Invitation invitation :
+                invitationsToUpdate) {
             invitation.setInvitedUser(user);
             invitationRepo.save(invitation);
         }
@@ -102,9 +104,20 @@ public class InvitationServiceImpl implements InvitationService {
         return invitationRepo.save(invitation);
     }
 
+
+    @Transactional
     @Override
     public Invitation markInvitationAccepted(Invitation invitation) {
+        log.info("markInvitationAccepted method");
         invitation.setAccepted(true);
+        Event event = eventRepo.getOne(invitation.getEvent().getEventId());
+        event.setEventName("SANTA NEW");
+        User user = userRepo.getOne(invitation.getInvitedUser().getUserId());
+        user.getEvents().add(event);
+        userRepo.save(user);
+        event.getUsers().add(user);
+        eventRepo.save(event);
+
         return invitationRepo.save(invitation);
     }
 

@@ -1,8 +1,9 @@
 package ru.inno.projects.models;
 
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.inno.projects.repos.InvitationRepo;
@@ -14,14 +15,16 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-@Table(name = "users")
-@EqualsAndHashCode(exclude = {"roles"})
+@Table(name = "users", schema = "PUBLIC")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -49,13 +52,18 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     private String activationCode;
+
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    private Set<Event> events = new HashSet<>();
+
     @ManyToMany
     @JoinTable(
-            name = "events_users",
-            joinColumns = {@JoinColumn(name = "event_id")},
+            name = "teams_users",
+            joinColumns = {@JoinColumn(name = "team_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-    private Set<Event> events = new HashSet<>();
+    private Set<Team> teams = new HashSet<>();
 
     // Один пользователь может иметь несколько приглашений
     @OneToMany(mappedBy="invitedUser")
@@ -69,6 +77,27 @@ public class User implements UserDetails {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
+
+    public User(@NotBlank(message = "Имя пользователя не может быть пустым.") @Pattern(regexp = "[A-Za-z0-9._-]*", message = "Имя может быть написано только латиницей и содержать цифры, а также символы ._-.") @Size(min = 1, max = 40, message = "Максимальная длина имени 40 символов.") String username, @NotBlank(message = "Пароль не может быть пустым.") String password, boolean active, @Email(message = "Email не соответствует стандарту.") @NotBlank(message = "Email не может быть пустым.") String email, @Pattern(regexp = "^(?:8|\\+)[0-9\\s.\\/-]{6,20}$", message = "Номер должен начинаться с 8 или с +7.") @NotBlank(message = "Телефонный номер не может быть пустым.") String phoneNumber, String activationCode, Set<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.active = active;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.activationCode = activationCode;
+        this.roles = roles;
+    }
+
+    public User(@NotBlank(message = "Имя пользователя не может быть пустым.") @Pattern(regexp = "[A-Za-z0-9._-]*", message = "Имя может быть написано только латиницей и содержать цифры, а также символы ._-.") @Size(min = 1, max = 40, message = "Максимальная длина имени 40 символов.") String username, @NotBlank(message = "Пароль не может быть пустым.") String password, boolean active, @Email(message = "Email не соответствует стандарту.") @NotBlank(message = "Email не может быть пустым.") String email, @Pattern(regexp = "^(?:8|\\+)[0-9\\s.\\/-]{6,20}$", message = "Номер должен начинаться с 8 или с +7.") @NotBlank(message = "Телефонный номер не может быть пустым.") String phoneNumber, String activationCode, Set<Event> events, Set<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.active = active;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.activationCode = activationCode;
+        this.events = events;
+        this.roles = roles;
+    }
 
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
@@ -99,24 +128,22 @@ public class User implements UserDetails {
         return isActive();
     }
 
-    public String getEmail() {
-        return email;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return active == user.active
+                && Objects.equals(userId, user.userId)
+                && Objects.equals(username, user.username)
+                && Objects.equals(password, user.password)
+                && Objects.equals(email, user.email)
+                && Objects.equals(phoneNumber, user.phoneNumber)
+                && Objects.equals(activationCode, user.activationCode);
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, username, password, active, email, phoneNumber, activationCode);
     }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
 }

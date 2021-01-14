@@ -12,7 +12,6 @@ import ru.inno.projects.models.User;
 import ru.inno.projects.services.InvitationService;
 import ru.inno.projects.services.UserService;
 
-
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -65,7 +64,7 @@ public class RegistrationController {
             hasAnError = true;
         }
 
-        if (hasAnError){
+        if (hasAnError) {
             return "registration";
         }
 
@@ -81,12 +80,12 @@ public class RegistrationController {
     }
 
     @GetMapping("/activate/{code}")
-    public String activate(Model model, @PathVariable String code){
+    public String activate(Model model, @PathVariable String code) {
         log.info("Start method activate from RegistrationController");
         boolean isActivate = userService.activateUser(code);
         String message;
 
-        if(isActivate){
+        if (isActivate) {
             log.info("Registration was successful");
             message = "Поздравляем, регистрация прошла успешно!";
         } else {

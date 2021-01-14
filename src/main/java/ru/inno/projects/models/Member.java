@@ -4,8 +4,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -26,7 +24,7 @@ public class Member {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name="event_id", nullable=false)
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
     public void setEvent(Event event) {

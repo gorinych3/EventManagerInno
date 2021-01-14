@@ -58,4 +58,13 @@
         </#if>
         </tbody>
     </table>
+    <br>
+    <div>
+        <form action="start_event" method = "post">
+            <input type="hidden" name="eventId" value="${event.eventId}" />
+            <input type="hidden" name="_csrf" value="${_csrf.token}" />
+            <button type="submit" class="btn btn-primary">Жеребьевка</button>
+        </form>
+    </div>
+    <br/>
 </@c.page>

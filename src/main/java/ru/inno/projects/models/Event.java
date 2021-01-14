@@ -1,22 +1,23 @@
 package ru.inno.projects.models;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-@Table(name = "events")
-@EqualsAndHashCode(exclude = {"users"})
+@Table(name = "events", schema = "PUBLIC")
 public class Event {
 
     @Id
@@ -27,29 +28,44 @@ public class Event {
 
     private LocalDateTime createDate;
 
-    public Event() {
-    }
+    @ManyToMany(fetch = FetchType.LAZY, cascade =
+            {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "events_users",
+            joinColumns = {@JoinColumn(name = "event_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<User> users = new HashSet<>();
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "action_id")
+    private Action action;
+
+    @OneToMany(mappedBy = "event")
+    private List<Member> members;
+
+    @OneToMany(mappedBy = "event")
+    private Set<Invitation> invitations;
 
     public Event(String eventName, LocalDateTime createDate) {
         this.eventName = eventName;
         this.createDate = createDate;
     }
 
-    @ManyToMany
-    @JoinTable(
-            name = "events_users",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "event_id")}
-    )
-    private Set<User> users = new HashSet<>();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return eventId == event.eventId
+                && Objects.equals(eventName, event.eventName)
+                && Objects.equals(createDate, event.createDate);
+    }
 
-    // Много приглашений может соответствовать одному событию
-//    @OneToMany(mappedBy="event")
-//    private Set<Invitation> invitations;
-
-    @OneToMany(mappedBy = "event")
-    //@OneToMany(mappedBy="event")
-    private List<Member> members;
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventId, eventName, createDate);
+    }
 
     public long getEventId() {
         return eventId;

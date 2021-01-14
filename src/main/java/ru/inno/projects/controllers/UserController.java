@@ -7,8 +7,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.inno.projects.models.Event;
 import ru.inno.projects.models.Role;
@@ -17,8 +15,6 @@ import ru.inno.projects.services.EventService;
 import ru.inno.projects.services.UserService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -94,7 +90,7 @@ public class UserController {
             hasAnError = true;
         }
 
-        if (hasAnError){
+        if (hasAnError) {
             return "profile";
         }
 
