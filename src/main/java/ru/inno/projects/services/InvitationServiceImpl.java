@@ -111,7 +111,6 @@ public class InvitationServiceImpl implements InvitationService {
         log.info("markInvitationAccepted method");
         invitation.setAccepted(true);
         Event event = eventRepo.getOne(invitation.getEvent().getEventId());
-        event.setEventName("SANTA NEW");
         User user = userRepo.getOne(invitation.getInvitedUser().getUserId());
         user.getEvents().add(event);
         userRepo.save(user);

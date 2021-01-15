@@ -1,6 +1,6 @@
 <#import "parts/common.ftlh" as c>
 <@c.page>
-    <h2>Список всех ивентов</h2>
+    <h2>Список всех ивентов, в которых я принимаю участие</h2>
     <table class="table table-striped">
         <thead>
         <tr>

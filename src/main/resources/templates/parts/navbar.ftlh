@@ -16,19 +16,19 @@
                     <a class="nav-link <#if .main_template_name == "list.ftlh" || .main_template_name == "userEdit.ftlh"> active</#if>" href="/user">Администрирование пользователей</a>
                 </li>
             </#if>
-            <#if isAdmin>
+            <#if known>
                 <li class="nav-item">
-                    <a class="nav-link <#if .main_template_name == "eventList.ftlh"> active</#if>" href="/event">Все ивенты</a>
+                    <a class="nav-link <#if .main_template_name == "eventRegistration.ftlh"> active</#if>" href="/event/create">Создание ивента</a>
                 </li>
             </#if>
             <#if known>
                 <li class="nav-item">
-                    <a class="nav-link <#if .main_template_name == "eventRegistration.ftlh"> active</#if>" href="/event/create">Создание эвента</a>
+                    <a class="nav-link <#if .main_template_name == "eventList.ftlh"> active</#if>" href="/event">Ивенты, в которых я участвую</a>
                 </li>
             </#if>
             <#if known>
                 <li class="nav-item">
-                    <a class="nav-link <#if .main_template_name == "currentUserEvents.ftlh"> active</#if>" href="/event/user">Мои ивенты</a>
+                    <a class="nav-link <#if .main_template_name == "currentUserEvents.ftlh"> active</#if>" href="/event/user">Созданные мной ивенты</a>
                 </li>
             </#if>
             <#if known>

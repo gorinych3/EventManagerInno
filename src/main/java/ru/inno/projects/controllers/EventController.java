@@ -45,9 +45,10 @@ public class EventController {
 
     @PreAuthorize("hasAuthority('USER')")
     @GetMapping
-    public String eventList(Model model) {
+    public String eventList(@AuthenticationPrincipal User user, Model model) {
         log.info("Start method eventList from EventController");
-        model.addAttribute("events", eventService.getAllEvents());
+        //model.addAttribute("events", eventService.getAllEvents());
+        model.addAttribute("events", eventService.getEventsByUser(user));
         return "eventList";
     }
 
@@ -56,7 +57,7 @@ public class EventController {
     public String eventUsersList(@AuthenticationPrincipal User user, Model model) {
         log.info("Start method eventUsersList from EventController");
         model.addAttribute("username", user.getUsername());
-        model.addAttribute("events", eventService.getEventsByUser(user));
+        model.addAttribute("events", eventService.getEventsByOwner(user));
         return "currentUserEvents";
     }
 
@@ -113,6 +114,7 @@ public class EventController {
         List<Member> array = json.fromJson(membersJSON, new TypeToken<List<Member>>() {
         }.getType());
         newEvent.setMembers(array);
+        newEvent.setOwnerUser(user);
         Event savedEvent = eventService.save(newEvent, teams, playersOnTeam);
         array.forEach((m) ->
         {
