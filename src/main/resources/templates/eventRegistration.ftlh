@@ -10,7 +10,7 @@
                             <p><b>Создание эвента</b></p>
                             <div class="form-group row">
                                 <div class="col-sm-6">
-                                    <<label class="col-sm-2 col-form-label">Название эвента:</label>
+                                    <label class="col-sm-2 col-form-label">Название эвента:</label>
                                     <input type="text" name="eventName" class="form-control" placeholder="Event name" />
                                     <label class="col-sm-2 col-form-label">Дата проведения эвента:</label>
                                     <input type="datetime-local" name="eventDate" class="form-control" placeholder="Event Date"/>

@@ -13,7 +13,6 @@ import ru.inno.projects.services.InvitationService;
 import ru.inno.projects.services.UserService;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.util.Map;
 
 @Slf4j

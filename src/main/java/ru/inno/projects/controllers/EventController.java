@@ -10,11 +10,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.inno.projects.models.Action;
 import ru.inno.projects.models.Event;
 import ru.inno.projects.models.Invitation;
 import ru.inno.projects.models.User;
-import ru.inno.projects.models.*;
-import ru.inno.projects.repos.MemberRepo;
 import ru.inno.projects.services.ActionService;
 import ru.inno.projects.services.EventService;
 import ru.inno.projects.services.InvitationService;
@@ -39,7 +38,7 @@ public class EventController {
 
     @Autowired
 
-    public EventController(EventService eventService, UserService userService, InvitationService invitationService, ActionService actionService, MemberRepo memberRepo) {
+    public EventController(EventService eventService, UserService userService, InvitationService invitationService, ActionService actionService) {
         this.eventService = eventService;
         this.userService = userService;
         this.invitationService = invitationService;
@@ -50,7 +49,6 @@ public class EventController {
     @GetMapping
     public String eventList(@AuthenticationPrincipal User user, Model model) {
         log.info("Start method eventList from EventController");
-        //model.addAttribute("events", eventService.getAllEvents());
         model.addAttribute("events", eventService.getEventsByUser(user));
         return "eventList";
     }
@@ -131,7 +129,6 @@ public class EventController {
         Gson json = new Gson();
         List<String> array = json.fromJson(membersJSON, new TypeToken<List<String>>() {
         }.getType());
-        newEvent.setMembers(array);
         newEvent.setEventDate(eventDate == null || eventDate.isEmpty() ?
                 null : LocalDateTime.parse(eventDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
         newEvent.setEventTossDate(eventTossDate == null || eventTossDate.isEmpty() ?

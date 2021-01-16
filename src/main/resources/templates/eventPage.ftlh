@@ -55,7 +55,10 @@
             <#list invitations as invitation>
                 <tr>
                     <td>${invitation.creationDate}</td>
-                    <td><#if invitation.invitedUser??>${invitation.emailInvitation} (${invitation.invitedUser.username})<#elseif invitation.emailInvitation??>${invitation.emailInvitation}</#if></td>
+                    <td><#if invitation.invitedUser??>
+                            <#if invitation.emailInvitation??>${invitation.emailInvitation}<#else>${invitation.invitedUser.username}</#if>
+                        <#elseif invitation.emailInvitation??>
+                            ${invitation.emailInvitation}</#if></td>
                     <td>${invitation.accepted?then('Да', 'Нет')}</td>
                     <td>${invitation.informed?then('Да', 'Нет')}</td>
                     <td>
