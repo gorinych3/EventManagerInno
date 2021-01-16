@@ -7,8 +7,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.inno.projects.models.*;
-import ru.inno.projects.repos.MemberRepo;
+import ru.inno.projects.models.Event;
+import ru.inno.projects.models.Invitation;
+import ru.inno.projects.models.Role;
+import ru.inno.projects.models.User;
 import ru.inno.projects.repos.UserRepo;
 
 import java.math.BigDecimal;
@@ -23,16 +25,14 @@ public class UserServiceImpl implements UserService {
     private final EventMailServise mailServise;
 
     private final PasswordEncoder passwordEncoder;
-    private final MemberRepo memberRepo;
 
     @Autowired
     public UserServiceImpl(UserRepo userRepo,
                            EventMailServise mailServise,
-                           PasswordEncoder passwordEncoder, MemberRepo memberRepo) {
+                           PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.mailServise = mailServise;
         this.passwordEncoder = passwordEncoder;
-        this.memberRepo = memberRepo;
     }
 
     @Override
@@ -89,11 +89,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public Set<User> getAllUsersByEvent(Event event) {
         return new HashSet<>(userRepo.findAllByEvents(event));
-    }
-
-    @Override
-    public List<Member> getAllMembersByEvent(Event event) {
-        return memberRepo.findAllMembersByEvent(event);
     }
 
     @Override

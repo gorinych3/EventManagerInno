@@ -11,8 +11,12 @@
         <div class="col">${event.eventName}</div>
     </div>
     <div class="row">
-        <div class="col">Дата</div>
+        <div class="col">Дата создания</div>
         <div class="col">${event.createDate}</div>
+    </div>
+    <div class="row">
+        <div class="col">Дата проведения</div>
+        <div class="col"><#if event.eventDate??>${event.eventDate}<#else>Не назначено</#if></div>
     </div>
     <div class="row">
         <div class="col">Action</div>
@@ -43,4 +47,13 @@
         </#if>
         </tbody>
     </table>
+    <div>
+        <#if user.username == event.ownerUser.username>
+            <form action="start_event" method = "post">
+                <input type="hidden" name="eventId" value="${event.eventId}" />
+                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                <button type="submit" class="btn btn-primary">Жеребьевка</button>
+            </form>
+        </#if>
+    </div>
 </@c.page>

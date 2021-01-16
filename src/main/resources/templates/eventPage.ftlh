@@ -11,8 +11,16 @@
         <div class="col">${event.eventName}</div>
     </div>
     <div class="row">
-        <div class="col">Дата</div>
+        <div class="col">Дата создания</div>
         <div class="col">${event.createDate}</div>
+    </div>
+    <div class="row">
+        <div class="col">Дата проведения</div>
+        <div class="col"><#if event.eventDate??>${event.eventDate}<#else>Не назначено</#if></div>
+    </div>
+    <div class="row">
+        <div class="col">Дата проведения жеребьевки</div>
+        <div class="col"><#if event.eventTossDate??>${event.eventTossDate}<#else>Не назначено</#if></div>
     </div>
     <br/>
     <h2>Добавить приглашенных</h2>
@@ -47,8 +55,10 @@
             <#list invitations as invitation>
                 <tr>
                     <td>${invitation.creationDate}</td>
-                    <td><#if invitation.invitedUser??>${invitation.invitedUser.username}<#elseif invitation.emailInvitation??>${invitation.emailInvitation}</#if></td>
-<#--                    <td><#if invitation.invitedUser??>${invitation.emailInvitation} (${invitation.invitedUser.username})<#elseif invitation.emailInvitation??>${invitation.emailInvitation}</#if></td>-->
+                    <td><#if invitation.invitedUser??>
+                            <#if invitation.emailInvitation??>${invitation.emailInvitation}<#else>${invitation.invitedUser.username}</#if>
+                        <#elseif invitation.emailInvitation??>
+                            ${invitation.emailInvitation}</#if></td>
                     <td>${invitation.accepted?then('Да', 'Нет')}</td>
                     <td>${invitation.informed?then('Да', 'Нет')}</td>
                     <td>
@@ -70,11 +80,17 @@
     </table>
     <br>
     <div>
-        <#if user.username == event.ownerUser.username>
+        <#if user.username == event.ownerUser.username && !isResult && event.action??>
             <form action="start_event" method = "post">
                 <input type="hidden" name="eventId" value="${event.eventId}" />
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
                 <button type="submit" class="btn btn-primary">Жеребьевка</button>
+            </form>
+        <#elseif isResult>
+            <form action="resultAction" method = "post">
+                <input type="hidden" name="eventId" value="${event.eventId}" />
+                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                <button type="submit" class="btn btn-primary">Результаты жеребьевки</button>
             </form>
         </#if>
     </div>

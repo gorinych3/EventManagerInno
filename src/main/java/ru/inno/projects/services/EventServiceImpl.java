@@ -13,7 +13,7 @@ import ru.inno.projects.repos.EventRepo;
 import ru.inno.projects.repos.PlayActionRepo;
 import ru.inno.projects.repos.UserRepo;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
@@ -52,9 +52,10 @@ public class EventServiceImpl implements EventService {
         return eventRepo.findEventsByOwnerUser(user);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public Event getEventById(long eventId) {
-        return eventRepo.getOne(eventId);
+        return eventRepo.findEventByEventId(eventId);
     }
 
     @Transactional
@@ -84,38 +85,46 @@ public class EventServiceImpl implements EventService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
+    public boolean getBoolResultAction(Event event) {
+        return !playActionRepo.findAllPlayActionsByAction(event.getAction()).isEmpty();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
     public Event startAction(long eventId) {
         log.info("startAction method");
         Event event = eventRepo.getOne(eventId);
         Action action = event.getAction();
-        Set<PlayAction> playActionSet = new HashSet<>(playActionRepo.findAllPlayActionsByAction(action));
-        for (PlayAction playAction : playActionSet) {
-            playActionRepo.delete(playAction);
-        }
-        playActionSet.clear();
-        Set<User> users = event.getUsers();
-
-        if (!users.isEmpty()) {
-            //если нет заданного количества команд или количества игроков в командах, то это цепь (лига, санта)
-            log.info("get teams = " + action.getTeams());
-            log.info("get getPlayersOnTeam = " + action.getPlayersOnTeam());
-            if (action.getTeams() == 0 && action.getPlayersOnTeam() == 0) {
-                playActionSet = santaRealization(event.getAction(), users);
-            } else {
-                playActionSet = actionRealization(event.getAction(), users);
+        if (action != null) {
+            Set<PlayAction> playActionSet = new HashSet<>(playActionRepo.findAllPlayActionsByAction(action));
+            for (PlayAction playAction : playActionSet) {
+                playActionRepo.delete(playAction);
             }
+            playActionSet.clear();
+            Set<User> users = event.getUsers();
 
-            action.setPlayActions(playActionSet);
+            if (!users.isEmpty()) {
+                //если нет заданного количества команд или количества игроков в командах, то это цепь (лига, санта)
+                log.info("get teams = " + action.getTeams());
+                log.info("get getPlayersOnTeam = " + action.getPlayersOnTeam());
+                if (action.getTeams() == 0 && action.getPlayersOnTeam() == 0) {
+                    playActionSet = santaRealization(event.getAction(), users);
+                } else {
+                    playActionSet = actionRealization(event.getAction(), users);
+                }
+
+                action.setPlayActions(playActionSet);
+                event.setAction(action);
+                action.setEvent(event);
+                action = actionRepo.save(action);
+                event = eventRepo.save(event);
+            }
+            Set<PlayAction> playActions = new HashSet<>(playActionRepo.findAllPlayActionsByAction(action));
+            Set<User> userSet = new HashSet<>(userRepo.findAllByEvents(event));
+            event.setUsers(userSet);
+            action.setPlayActions(playActions);
             event.setAction(action);
-            action.setEvent(event);
-            action = actionRepo.save(action);
-            event = eventRepo.save(event);
         }
-        Set<PlayAction> playActions = new HashSet<>(playActionRepo.findAllPlayActionsByAction(action));
-        Set<User> userSet = new HashSet<>(userRepo.findAllByEvents(event));
-        event.setUsers(userSet);
-        action.setPlayActions(playActions);
-        event.setAction(action);
         return event;
     }
 
@@ -195,7 +204,7 @@ public class EventServiceImpl implements EventService {
     // для тестов fixedRate = 60000, initialDelay = 180000
     public void checkEventExpire() {
         log.info("Start scheduled");
-        List<Event> events = eventRepo.findEventsByCreateDateBefore(LocalDateTime.now());
+        List<Event> events = eventRepo.findEventsByEventTossDate(LocalDate.now());
         for (Event event : events) {
             Action action = event.getAction();
             if (action != null) {

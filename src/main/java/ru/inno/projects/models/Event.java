@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,10 @@ public class Event {
 
     private LocalDateTime createDate;
 
+    private LocalDateTime eventDate;
+
+    private LocalDate eventTossDate;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade =
             {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
@@ -44,9 +49,6 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "owner_user_id", nullable = false)
     private User ownerUser;
-
-    @OneToMany(mappedBy = "event")
-    private List<Member> members;
 
     @OneToMany(mappedBy = "event")
     private Set<Invitation> invitations;

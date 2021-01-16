@@ -4,7 +4,6 @@ package ru.inno.projects.services;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.inno.projects.models.Event;
 import ru.inno.projects.models.Invitation;
-import ru.inno.projects.models.Member;
 import ru.inno.projects.models.User;
 
 import java.math.BigDecimal;
@@ -21,8 +20,6 @@ public interface UserService extends UserDetailsService {
     boolean isUserExists(User user);
 
     Set<User> getAllUsersByEvent(Event event);
-
-    List<Member> getAllMembersByEvent(Event event);
 
     boolean updateUserRoles(User user, Map<String, String> form);
 

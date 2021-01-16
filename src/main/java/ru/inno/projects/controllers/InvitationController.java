@@ -37,14 +37,6 @@ public class InvitationController {
         this.invitationService = invitationService;
     }
 
-//    @PreAuthorize("hasAuthority('USER')")
-//    @GetMapping
-//    public String eventList(Model model) {
-//        log.info("Start method eventList from EventController");
-//        model.addAttribute("events", eventService.getAllEvents());
-//        return "eventList";
-//    }
-
     @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/user")
     public String invitationUserList(@AuthenticationPrincipal User user, Model model) {
@@ -56,8 +48,6 @@ public class InvitationController {
         }
         model.addAttribute("invitationsInvited", invitationsByInvitedUser);
         model.addAttribute("invitationsInvitor", invitationService.getInvitationsByInvitorUser(user));
-
-//        model.addAttribute("username", user.getUsername());
 
         return "currentUserInvitations";
     }
