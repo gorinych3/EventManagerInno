@@ -118,18 +118,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUser(User user, String password, String phoneNumber, String email) {
+    public boolean updateUser(User user, String username, String password, String phoneNumber, String email) {
         log.info("Start method updateUser from UserServiceImpl");
         String userEmail = user.getEmail();
 
         boolean isEmailChanged = (email != null && !email.equals(userEmail)) ||
                 (userEmail != null && !userEmail.equals(email));
 
-        if (isEmailChanged) {
-            user.setEmail(email);
-            if (email != null && email.isEmpty()) {
-                user.setActivationCode(UUID.randomUUID().toString());
-            }
+        if (!username.isEmpty()) {
+            user.setUsername(username);
         }
 
         if (!password.isEmpty()) {
@@ -189,9 +186,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         log.info("Start method loadUserByUsername from UserServiceImpl");
-        User user = userRepo.findByUsername(userName);
+        User user = userRepo.findByEmail(email);
         return user != null ? user : new User();
     }
 }

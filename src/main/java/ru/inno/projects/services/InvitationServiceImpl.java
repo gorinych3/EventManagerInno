@@ -2,6 +2,7 @@ package ru.inno.projects.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,13 +24,16 @@ public class InvitationServiceImpl implements InvitationService {
     private final InvitationRepo invitationRepo;
     private final UserRepo userRepo;
     private final EventRepo eventRepo;
-
+    private final JavaMailSender mailSender;
+    private final EventMailServise mailServise;
 
     @Autowired
-    public InvitationServiceImpl(InvitationRepo invitationRepo, UserRepo userRepo, EventRepo eventRepo) {
+    public InvitationServiceImpl(InvitationRepo invitationRepo, UserRepo userRepo, EventRepo eventRepo, JavaMailSender mailSender, EventMailServise mailServise) {
         this.invitationRepo = invitationRepo;
         this.userRepo = userRepo;
         this.eventRepo = eventRepo;
+        this.mailSender = mailSender;
+        this.mailServise = mailServise;
     }
 
     @Override
@@ -83,6 +87,37 @@ public class InvitationServiceImpl implements InvitationService {
 
         invitationRepo.save(invitation);
 
+        User invitedUser = userRepo.findUserByEmail(email);
+
+        if (invitedUser != null) {
+            final String message = String.format(
+                    "Привет! \n" +
+                            "%s тебя пригласили на ивент под названием: %s. \n" +
+                            "для просмотра ивента перейди по ссылке: " +
+                            "http://localhost:8080/event/%s \n" +
+                            "для участия в ивенте подтверди приглашение по ссылке: " +
+                            "http://localhost:8080/invitations/user",
+                    invitorUser.getUsername(),
+                    event.getEventName(),
+                    event.getEventId()
+            );
+
+            mailServise.send(invitedUser.getEmail(), "Приглашение на ивент", message);
+        }
+
+        else if (!invitation.getEmailInvitation().isEmpty()) {
+            final String message = String.format(
+                    "Привет! \n" +
+                            "Добро пожаловать в Event Manager. %s тебя пригласили на ивент под названием: %s, " +
+                            "для участия в ивенте перейди по ссылке: " +
+                            "http://localhost:8080/registration/invitation/%s",
+                    invitorUser.getUsername(),
+                    event.getEventName(),
+                    invitation.getEmailInvitation()
+            );
+
+            mailServise.send(invitation.getEmailInvitation(), "Приглашение на ивент", message);
+        }
         return true;
     }
 

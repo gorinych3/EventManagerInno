@@ -4,6 +4,7 @@
     <table class="table table-striped">
         <thead>
         <tr>
+            <th>E-mail</th>
             <th>Name</th>
             <th>Role</th>
             <th></th>
@@ -12,6 +13,7 @@
         <tbody>
         <#list users as user>
             <tr>
+                <td>${user.email}</td>
                 <td>${user.username}</td>
                 <td><#list user.roles as role>${role}<#sep>, </#list></td>
                 <td><a href="/user/${user.userId}">edit user</a></td>

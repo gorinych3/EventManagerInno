@@ -8,7 +8,7 @@
     </#if>
     <form action ="/user/profile" method = "post">
 
-        <#include "parts/userDataFields.ftlh">
+        <#include "userDataFieldsProfile.ftlh">
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Cохранить изменения</button>
         <input type="hidden" name="_csrf" value="${_csrf.token}" />

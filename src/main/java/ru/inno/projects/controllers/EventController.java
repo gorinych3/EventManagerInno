@@ -14,7 +14,9 @@ import ru.inno.projects.models.Event;
 import ru.inno.projects.models.Invitation;
 import ru.inno.projects.models.Member;
 import ru.inno.projects.models.User;
-import ru.inno.projects.repos.MemberRepo;
+import ru.inno.projects.repos.EventRepo;
+import ru.inno.projects.repos.InvitationRepo;
+import ru.inno.projects.repos.UserRepo;
 import ru.inno.projects.services.EventService;
 import ru.inno.projects.services.InvitationService;
 import ru.inno.projects.services.UserService;
@@ -33,14 +35,18 @@ public class EventController {
     private final EventService eventService;
     private final UserService userService;
     private final InvitationService invitationService;
-    MemberRepo memberRepo;
+    private final InvitationRepo invitationRepo;
+    private final EventRepo eventRepo;
+    private final UserRepo userRepo;
 
     @Autowired
-    public EventController(EventService eventService, UserService userService, InvitationService invitationService, MemberRepo memberRepo) {
+    public EventController(EventService eventService, UserService userService, InvitationService invitationService, InvitationRepo invitationRepo, EventRepo eventRepo, UserRepo userRepo) {
         this.eventService = eventService;
         this.userService = userService;
         this.invitationService = invitationService;
-        this.memberRepo = memberRepo;
+        this.invitationRepo = invitationRepo;
+        this.eventRepo = eventRepo;
+        this.userRepo = userRepo;
     }
 
     @PreAuthorize("hasAuthority('USER')")
@@ -78,11 +84,20 @@ public class EventController {
     @PostMapping("/send_invitation")
     public String sendInvitation(@RequestParam Map<String, String> form, @AuthenticationPrincipal User user, @RequestParam("eventId") Event event, Model model) {
 
-        log.info("Start method sendInvitation");
+        log.info("Start method sendInvitation from EventController");
 
         String email = form.get("email");
 
-        if (!invitationService.sendInvitation(event, user, email)) {
+        User invitedUser = userRepo.findUserByEmail(email);
+        Invitation invitationByEmailInvitationAndEvent = invitationRepo.findInvitationByEmailInvitationAndEvent(email, event);
+        Invitation invitationByInvitedUserAndEvent = invitationRepo.findInvitationByInvitedUserAndEvent(invitedUser, event);
+
+        if(invitationByEmailInvitationAndEvent != null || invitationByInvitedUserAndEvent != null){
+            model.addAttribute("errorMessage", "Вы уже добавили этого пользователя");
+            model.addAttribute("event", event);
+            return "eventPage";
+        }
+        else if (!invitationService.sendInvitation(event, user, email)) {
             model.addAttribute("errorMessage", "Что-то пошло не так при отсылке приглашения");
             model.addAttribute("event", event);
             return "eventPage";
@@ -105,7 +120,7 @@ public class EventController {
 
     @GetMapping("/create")
     public String formEvent(@AuthenticationPrincipal User user) {
-        log.info("Start method sendInvitation");
+        log.info("Start method formEvent GetMapping");
         return "eventRegistration";
     }
 
@@ -121,17 +136,16 @@ public class EventController {
                             @RequestParam(value = "teams", required = false) Integer teams,
                             @RequestParam(value = "playersOnTeam", required = false) Integer playersOnTeam,
                             Model model) throws ParseException {
-        log.info("Start method sendInvitation");
+        log.info("Start method formEvent PostMapping");
         Event newEvent = new Event(name, LocalDateTime.parse(createDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
         Gson json = new Gson();
-        List<Member> array = json.fromJson(membersJSON, new TypeToken<List<Member>>() {
+        List<String> array = json.fromJson(membersJSON, new TypeToken<List<String>>() {
         }.getType());
-        newEvent.setMembers(array);
         newEvent.setOwnerUser(user);
         Event savedEvent = eventService.save(newEvent, teams, playersOnTeam);
         array.forEach((m) ->
         {
-            invitationService.sendInvitation(savedEvent, user, m.getEmail());
+            invitationService.sendInvitation(savedEvent, user, m);
         });
         model.addAttribute("event", savedEvent);
         return "redirect:/event/" + savedEvent.getEventId();
