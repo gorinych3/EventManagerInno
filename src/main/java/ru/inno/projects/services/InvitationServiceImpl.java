@@ -141,5 +141,10 @@ public class InvitationServiceImpl implements InvitationService {
         return 0;
     }
 
+    @Override
+    public void removeInvitation(Invitation invitation) {
+        invitationRepo.delete(invitation);
+    }
+
 
 }

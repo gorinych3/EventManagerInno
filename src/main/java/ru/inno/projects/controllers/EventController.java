@@ -10,6 +10,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.inno.projects.models.Event;
+import ru.inno.projects.models.Invitation;
+import ru.inno.projects.models.User;
 import ru.inno.projects.models.*;
 import ru.inno.projects.repos.MemberRepo;
 import ru.inno.projects.services.ActionService;
@@ -33,15 +36,14 @@ public class EventController {
     private final UserService userService;
     private final InvitationService invitationService;
     private final ActionService actionService;
-    MemberRepo memberRepo;
 
     @Autowired
+
     public EventController(EventService eventService, UserService userService, InvitationService invitationService, ActionService actionService, MemberRepo memberRepo) {
         this.eventService = eventService;
         this.userService = userService;
         this.invitationService = invitationService;
         this.actionService = actionService;
-        this.memberRepo = memberRepo;
     }
 
     @PreAuthorize("hasAuthority('USER')")
@@ -93,6 +95,18 @@ public class EventController {
         return "redirect:/event/" + event.getEventId();
     }
 
+    @PostMapping("/remove_invitation")
+    public String removeInvitation(@AuthenticationPrincipal User user,
+                                   @RequestParam("invitationId") Invitation invitation,
+                                   @RequestParam("eventId") Event event,
+                                   Model model) throws ParseException {
+        log.info("Start method removeInvitation");
+        if (user.getUserId().equals(invitation.getInvitorUser().getUserId())) {
+            invitationService.removeInvitation(invitation);
+        }
+        return "redirect:/event/" + event.getEventId();
+    }
+
     @GetMapping("/create")
     public String formEvent(@AuthenticationPrincipal User user) {
         log.info("Start method sendInvitation");
@@ -115,7 +129,7 @@ public class EventController {
         log.info("Start method sendInvitation");
         Event newEvent = new Event(name, LocalDateTime.now());
         Gson json = new Gson();
-        List<Member> array = json.fromJson(membersJSON, new TypeToken<List<Member>>() {
+        List<String> array = json.fromJson(membersJSON, new TypeToken<List<String>>() {
         }.getType());
         newEvent.setMembers(array);
         newEvent.setEventDate(eventDate == null || eventDate.isEmpty() ?
@@ -126,7 +140,7 @@ public class EventController {
         Event savedEvent = eventService.save(newEvent, teams, playersOnTeam);
         array.forEach((m) ->
         {
-            invitationService.sendInvitation(savedEvent, user, m.getEmail());
+            invitationService.sendInvitation(savedEvent, user, m);
         });
         model.addAttribute("event", savedEvent);
         return "redirect:/event/" + savedEvent.getEventId();
