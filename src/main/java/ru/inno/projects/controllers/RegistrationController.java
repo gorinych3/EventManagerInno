@@ -59,7 +59,7 @@ public class RegistrationController {
         }
 
         if (userService.isUserExists(user)) {
-            model.addAttribute("usernameError", "Такой пользователь уже существует.");
+            model.addAttribute("emailError", "Такой пользователь уже существует.");
             hasAnError = true;
         }
 

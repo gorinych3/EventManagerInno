@@ -23,7 +23,7 @@ public interface UserService extends UserDetailsService {
 
     boolean updateUserRoles(User user, Map<String, String> form);
 
-    boolean updateUser(User user, String password, String phoneNumber, String email);
+    boolean updateUser(User user, String username, String password, String phoneNumber, String email);
 
     boolean deleteUser(User user);
 
