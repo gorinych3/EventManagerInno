@@ -46,9 +46,6 @@ public class Event {
     private User ownerUser;
 
     @OneToMany(mappedBy = "event")
-    private List<Member> members;
-
-    @OneToMany(mappedBy = "event")
     private Set<Invitation> invitations;
 
     public Event(String eventName, LocalDateTime createDate) {

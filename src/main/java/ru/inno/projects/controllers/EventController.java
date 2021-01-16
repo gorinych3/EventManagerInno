@@ -12,9 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.inno.projects.models.Event;
 import ru.inno.projects.models.Invitation;
-import ru.inno.projects.models.Member;
 import ru.inno.projects.models.User;
-import ru.inno.projects.repos.MemberRepo;
 import ru.inno.projects.services.EventService;
 import ru.inno.projects.services.InvitationService;
 import ru.inno.projects.services.UserService;
@@ -33,14 +31,12 @@ public class EventController {
     private final EventService eventService;
     private final UserService userService;
     private final InvitationService invitationService;
-    MemberRepo memberRepo;
 
     @Autowired
-    public EventController(EventService eventService, UserService userService, InvitationService invitationService, MemberRepo memberRepo) {
+    public EventController(EventService eventService, UserService userService, InvitationService invitationService) {
         this.eventService = eventService;
         this.userService = userService;
         this.invitationService = invitationService;
-        this.memberRepo = memberRepo;
     }
 
     @PreAuthorize("hasAuthority('USER')")
@@ -124,14 +120,13 @@ public class EventController {
         log.info("Start method sendInvitation");
         Event newEvent = new Event(name, LocalDateTime.parse(createDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
         Gson json = new Gson();
-        List<Member> array = json.fromJson(membersJSON, new TypeToken<List<Member>>() {
+        List<String> array = json.fromJson(membersJSON, new TypeToken<List<String>>() {
         }.getType());
-        newEvent.setMembers(array);
         newEvent.setOwnerUser(user);
         Event savedEvent = eventService.save(newEvent, teams, playersOnTeam);
         array.forEach((m) ->
         {
-            invitationService.sendInvitation(savedEvent, user, m.getEmail());
+            invitationService.sendInvitation(savedEvent, user, m);
         });
         model.addAttribute("event", savedEvent);
         return "redirect:/event/" + savedEvent.getEventId();
