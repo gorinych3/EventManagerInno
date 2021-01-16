@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,10 @@ public class Event {
     private String eventName;
 
     private LocalDateTime createDate;
+
+    private LocalDateTime eventDate;
+
+    private LocalDate eventTossDate;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade =
             {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

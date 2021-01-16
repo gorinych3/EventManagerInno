@@ -9,4 +9,6 @@ import ru.inno.projects.models.Event;
 public interface ActionRepo extends JpaRepository<Action, Long> {
     Action findActionByEvent(Event event);
 
+    Action findActionByActionId(long actionId);
+
 }

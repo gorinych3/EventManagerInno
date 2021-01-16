@@ -10,16 +10,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.inno.projects.models.Event;
-import ru.inno.projects.models.Invitation;
-import ru.inno.projects.models.Member;
-import ru.inno.projects.models.User;
+import ru.inno.projects.models.*;
 import ru.inno.projects.repos.MemberRepo;
+import ru.inno.projects.services.ActionService;
 import ru.inno.projects.services.EventService;
 import ru.inno.projects.services.InvitationService;
 import ru.inno.projects.services.UserService;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -33,13 +32,15 @@ public class EventController {
     private final EventService eventService;
     private final UserService userService;
     private final InvitationService invitationService;
+    private final ActionService actionService;
     MemberRepo memberRepo;
 
     @Autowired
-    public EventController(EventService eventService, UserService userService, InvitationService invitationService, MemberRepo memberRepo) {
+    public EventController(EventService eventService, UserService userService, InvitationService invitationService, ActionService actionService, MemberRepo memberRepo) {
         this.eventService = eventService;
         this.userService = userService;
         this.invitationService = invitationService;
+        this.actionService = actionService;
         this.memberRepo = memberRepo;
     }
 
@@ -68,6 +69,7 @@ public class EventController {
 
         model.addAttribute("event", event);
         model.addAttribute("user", user);
+        model.addAttribute("isResult", eventService.getBoolResultAction(event));
 
         List<Invitation> invitationsByEvent = invitationService.getInvitationsByEvent(event);
         model.addAttribute("invitations", invitationsByEvent);
@@ -104,17 +106,22 @@ public class EventController {
     @PostMapping("/create")
     public String formEvent(@AuthenticationPrincipal User user,
                             @RequestParam(value = "eventName", required = false) String name,
-                            @RequestParam(value = "createDate", required = false) String createDate,
+                            @RequestParam(value = "eventDate", required = false) String eventDate,
+                            @RequestParam(value = "eventTossDate", required = false) String eventTossDate,
                             @RequestParam(value = "membersJSON", required = false) String membersJSON,
                             @RequestParam(value = "teams", required = false) Integer teams,
                             @RequestParam(value = "playersOnTeam", required = false) Integer playersOnTeam,
                             Model model) throws ParseException {
         log.info("Start method sendInvitation");
-        Event newEvent = new Event(name, LocalDateTime.parse(createDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
+        Event newEvent = new Event(name, LocalDateTime.now());
         Gson json = new Gson();
         List<Member> array = json.fromJson(membersJSON, new TypeToken<List<Member>>() {
         }.getType());
         newEvent.setMembers(array);
+        newEvent.setEventDate(eventDate == null || eventDate.isEmpty() ?
+                null : LocalDateTime.parse(eventDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
+        newEvent.setEventTossDate(eventTossDate == null || eventTossDate.isEmpty() ?
+                null : LocalDate.parse(eventTossDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         newEvent.setOwnerUser(user);
         Event savedEvent = eventService.save(newEvent, teams, playersOnTeam);
         array.forEach((m) ->
@@ -129,11 +136,24 @@ public class EventController {
     public String startEvent(@AuthenticationPrincipal User user,
                              @RequestParam(value = "eventId") long eventId, Model model) {
         Event resultEvent = eventService.startAction(eventId);
-        //уточнить, куда направляем и что передаем в модель
-        //передаем команды и списки участников в командах, play actions и сам ивент
+
+        model.addAttribute("user", user);
         model.addAttribute("event", resultEvent);
         model.addAttribute("action", resultEvent.getAction());
         model.addAttribute("playActions", resultEvent.getAction().getPlayActions());
+        return "eventResultPage";
+    }
+
+    @PostMapping("/resultAction")
+    public String showResultAction(@AuthenticationPrincipal User user,
+                                   @RequestParam(value = "eventId") long eventId, Model model) {
+        Event resultEvent = eventService.getEventById(eventId);
+        Action action = actionService.getActionById(resultEvent.getAction().getActionId());
+
+        model.addAttribute("user", user);
+        model.addAttribute("event", resultEvent);
+        model.addAttribute("action", action);
+        model.addAttribute("playActions", actionService.getAllPlayActionsByAction(action));
         return "eventResultPage";
     }
 }

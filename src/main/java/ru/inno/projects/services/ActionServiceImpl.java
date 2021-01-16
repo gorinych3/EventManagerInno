@@ -2,6 +2,7 @@ package ru.inno.projects.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.inno.projects.models.Action;
 import ru.inno.projects.models.Event;
@@ -27,10 +28,16 @@ public class ActionServiceImpl implements ActionService {
         this.playActionRepo = playActionRepo;
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public Action getActionByEvent(Event event) {
         return actionRepo.findActionByEvent(event);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public Action getActionById(long actionId) {
+        return actionRepo.findActionByActionId(actionId);
     }
 
     @Transactional

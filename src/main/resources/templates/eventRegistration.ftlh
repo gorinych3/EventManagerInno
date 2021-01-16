@@ -8,8 +8,10 @@
                 <div class="col-sm-6">
                     <label class="col-sm-2 col-form-label">Название эвента:</label>
                     <input type="text" name="eventName" class="form-control" placeholder="Event name" />
-                    <label class="col-sm-2 col-form-label">Дата эвента:</label>
-                    <input type="datetime-local" name="createDate" class="form-control" placeholder="Event createDate"/>
+                    <label class="col-sm-2 col-form-label">Дата проведения эвента:</label>
+                    <input type="datetime-local" name="eventDate" class="form-control" placeholder="Event Date"/>
+                    <label class="col-sm-2 col-form-label">Дата проведения жеребьевки:</label>
+                    <input type="date" name="eventTossDate" class="form-control" placeholder="Event Toss Date"/>
                     <label class="col-sm-2 col-form-label">Количество команд:</label>
                     <input type="number" name="teams" class="form-control" placeholder="number of teams"/>
                     <label class="col-sm-2 col-form-label">Количество участников в команде:</label>

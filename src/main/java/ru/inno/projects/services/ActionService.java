@@ -11,9 +11,9 @@ public interface ActionService {
 
     Action getActionByEvent(Event event);
 
+    Action getActionById(long actionId);
+
     Event getEventByAction(Action action);
 
     Set<PlayAction> getAllPlayActionsByAction(Action action);
-
-
 }

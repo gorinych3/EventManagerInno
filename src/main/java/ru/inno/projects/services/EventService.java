@@ -22,4 +22,5 @@ public interface EventService {
 
     Event save(Event event, Integer teams, Integer playersOnTeam);
 
+    boolean getBoolResultAction(Event event);
 }

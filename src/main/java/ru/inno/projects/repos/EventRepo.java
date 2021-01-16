@@ -7,11 +7,14 @@ import ru.inno.projects.models.Event;
 import ru.inno.projects.models.Invitation;
 import ru.inno.projects.models.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface EventRepo extends JpaRepository<Event, Long> {
+
+    Event findEventByEventId(long eventId);
 
     List<Event> findEventsByUsers(User user);
 
@@ -20,6 +23,8 @@ public interface EventRepo extends JpaRepository<Event, Long> {
     List<Event> findEventsByInvitations(Invitation invitation);
 
     List<Event> findEventsByCreateDateBefore(LocalDateTime localDateTime);
+
+    List<Event> findEventsByEventTossDate(LocalDate localDate);
 
     List<Event> findEventsByOwnerUser(User user);
 }

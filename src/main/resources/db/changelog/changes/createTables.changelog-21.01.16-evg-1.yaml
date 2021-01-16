@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumnEventDate&EventTossDate
+      author: egor.ganzya
+      changes:
+        - sql:
+            sql: alter table events add column event_date timestamp;
+        - sql:
+            sql: alter table events add column event_toss_date date;
