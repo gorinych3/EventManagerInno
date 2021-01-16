@@ -25,6 +25,19 @@
             </div>
         </#if>
     </div>
+<#--    <div class="form-group">-->
+<#--        <label for="inputEmail">E-mail*</label>-->
+<#--        <input type="text" name="email" id="inputEmail"-->
+<#--               class="form-control ${(emailError??)?string('is-invalid', '')}"-->
+<#--               placeholder="Введите ваш e-mail" required autofocus-->
+<#--               value="<#if user??>${user.email}</#if>"-->
+<#--        >-->
+<#--        <#if emailError??>-->
+<#--            <div class="invalid-feedback">-->
+<#--                ${emailError}-->
+<#--            </div>-->
+<#--        </#if>-->
+<#--    </div>-->
 
     <#include "parts/userDataFields.ftlh">
 

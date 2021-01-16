@@ -1,8 +1,8 @@
 <#macro login path>
     <form action="/login" method = "post">
         <div class="form-group">
-            <label for="inputUserName">Имя пользователя</label>
-            <input type="text" name="username" id="inputUserName" class="form-control" placeholder="Введите имя пользователя" required autofocus>
+            <label for="inputEmail">E-mail пользователя</label>
+            <input type="text" name="email" id="inputEmail" class="form-control" placeholder="Введите e-mail" required autofocus>
         </div>
         <div class="form-group">
             <label for="inputPassword">Пароль</label>

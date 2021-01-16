@@ -12,6 +12,8 @@ import java.util.List;
 public interface UserRepo extends JpaRepository<User, Long> {
     User findByUsername(String username);
 
+    User findByEmail(String email);
+
     User findUserByEmail(String email);
 
     User findByActivationCode(String code);
