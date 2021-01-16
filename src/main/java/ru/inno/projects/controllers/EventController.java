@@ -67,6 +67,7 @@ public class EventController {
         log.info("Start method showEvent");
 
         model.addAttribute("event", event);
+        model.addAttribute("user", user);
 
         List<Invitation> invitationsByEvent = invitationService.getInvitationsByEvent(event);
         model.addAttribute("invitations", invitationsByEvent);

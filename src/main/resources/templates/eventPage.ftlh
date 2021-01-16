@@ -60,11 +60,13 @@
     </table>
     <br>
     <div>
-        <form action="start_event" method = "post">
-            <input type="hidden" name="eventId" value="${event.eventId}" />
-            <input type="hidden" name="_csrf" value="${_csrf.token}" />
-            <button type="submit" class="btn btn-primary">Жеребьевка</button>
-        </form>
+        <#if user.username == event.ownerUser.username>
+            <form action="start_event" method = "post">
+                <input type="hidden" name="eventId" value="${event.eventId}" />
+                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                <button type="submit" class="btn btn-primary">Жеребьевка</button>
+            </form>
+        </#if>
     </div>
     <br/>
 </@c.page>
