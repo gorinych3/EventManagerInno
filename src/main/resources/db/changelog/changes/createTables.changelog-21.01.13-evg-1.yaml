@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumnUserId
+      author: egor.ganzya
+      changes:
+        - sql:
+            sql: alter table events add column owner_user_id bigint not null DEFAULT 1
+              constraint fk18t8mbtie69k8jfumi7ddw3yq
+              references users;
+  - changeSet:
+      id: create_hibernate_sequence
+      author: egor.ganzya
+      changes:
+        - sql:
+            sql: CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START 1;
+  - changeSet:
+      id: create_my_seq_gen
+      author: egor.ganzya
+      changes:
+        - sql:
+            sql: CREATE SEQUENCE IF NOT EXISTS my_seq_gen START 1;
