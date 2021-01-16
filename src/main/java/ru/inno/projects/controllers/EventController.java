@@ -96,12 +96,11 @@ public class EventController {
         Invitation invitationByEmailInvitationAndEvent = invitationRepo.findInvitationByEmailInvitationAndEvent(email, event);
         Invitation invitationByInvitedUserAndEvent = invitationRepo.findInvitationByInvitedUserAndEvent(invitedUser, event);
 
-        if(invitationByEmailInvitationAndEvent != null || invitationByInvitedUserAndEvent != null){
+        if (invitationByEmailInvitationAndEvent != null || invitationByInvitedUserAndEvent != null) {
             model.addAttribute("errorMessage", "Вы уже добавили этого пользователя");
             model.addAttribute("event", event);
             return "eventPage";
-        }
-        else if (!invitationService.sendInvitation(event, user, email)) {
+        } else if (!invitationService.sendInvitation(event, user, email)) {
             model.addAttribute("errorMessage", "Что-то пошло не так при отсылке приглашения");
             model.addAttribute("event", event);
             return "eventPage";
@@ -142,7 +141,7 @@ public class EventController {
                             @RequestParam(value = "playersOnTeam", required = false) Integer playersOnTeam,
                             Model model) throws ParseException {
         log.info("Start method formEvent PostMapping");
-        Event newEvent = new Event(name, LocalDateTime.parse(createDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
+        Event newEvent = new Event(name, LocalDateTime.now());
         Gson json = new Gson();
         List<String> array = json.fromJson(membersJSON, new TypeToken<List<String>>() {
         }.getType());
