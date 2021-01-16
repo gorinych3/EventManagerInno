@@ -4,9 +4,8 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Name</th>
-            <th>CreateDate</th>
-            <th></th>
+            <th>Название ивента</th>
+            <th>Дата создания ивента</th>
         </tr>
         </thead>
         <tbody>

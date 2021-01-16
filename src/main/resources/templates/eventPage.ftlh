@@ -38,6 +38,7 @@
             <th>Кого пригласили</th>
             <th>Принято</th>
             <th>Прочитано</th>
+            <th>Действия</th>
         </tr>
         </thead>
         <tbody>
@@ -46,9 +47,17 @@
             <#list invitations as invitation>
                 <tr>
                     <td>${invitation.creationDate}</td>
-                    <td><#if invitation.invitedUser??>${invitation.invitedUser.username}<#elseif invitation.emailInvitation??>${invitation.emailInvitation}</#if></td>
+                    <td><#if invitation.invitedUser??>${invitation.emailInvitation} (${invitation.invitedUser.username})<#elseif invitation.emailInvitation??>${invitation.emailInvitation}</#if></td>
                     <td>${invitation.accepted?then('Да', 'Нет')}</td>
                     <td>${invitation.informed?then('Да', 'Нет')}</td>
+                    <td>
+                        <form action="remove_invitation" method="post">
+                            <input hidden name="invitationId" value="${invitation.invitationId}">
+                            <input type="hidden" name="eventId" value="${event.eventId}" />
+                            <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                            <button class="btn btn-primary" type="submit" >Отозвать приглашение</button>
+                        </form>
+                    </td>
                 </tr>
             </#list>
         <#else>
