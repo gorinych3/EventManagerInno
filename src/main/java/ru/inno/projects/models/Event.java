@@ -41,6 +41,10 @@ public class Event {
     @JoinColumn(name = "action_id")
     private Action action;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_user_id", nullable = false)
+    private User ownerUser;
+
     @OneToMany(mappedBy = "event")
     private List<Member> members;
 

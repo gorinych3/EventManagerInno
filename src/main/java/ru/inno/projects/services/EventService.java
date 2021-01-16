@@ -1,6 +1,5 @@
 package ru.inno.projects.services;
 
-import ru.inno.projects.models.Action;
 import ru.inno.projects.models.Event;
 import ru.inno.projects.models.User;
 
@@ -12,6 +11,8 @@ public interface EventService {
     List<Event> getAllEvents();
 
     List<Event> getEventsByUser(User user);
+
+    List<Event> getEventsByOwner(User user);
 
     Event getEventById(long eventId);
 

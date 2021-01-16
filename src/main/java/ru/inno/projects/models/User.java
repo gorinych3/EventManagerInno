@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.inno.projects.repos.InvitationRepo;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -66,12 +65,15 @@ public class User implements UserDetails {
     private Set<Team> teams = new HashSet<>();
 
     // Один пользователь может иметь несколько приглашений
-    @OneToMany(mappedBy="invitedUser")
+    @OneToMany(mappedBy = "invitedUser")
     private Set<Invitation> invitationsUserInvited;
 
     // Один пользователь может создать несколько приглашений
-    @OneToMany(mappedBy="invitorUser")
+    @OneToMany(mappedBy = "invitorUser")
     private Set<Invitation> invitationsUserInvitor;
+
+    @OneToMany(mappedBy = "ownerUser")
+    private Set<Event> usersEvents;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))

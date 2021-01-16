@@ -47,6 +47,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<Event> getEventsByOwner(User user) {
+        log.info("start getEventsByOwner in EventServiceImpl");
+        return eventRepo.findEventsByOwnerUser(user);
+    }
+
+    @Override
     public Event getEventById(long eventId) {
         return eventRepo.getOne(eventId);
     }
