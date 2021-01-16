@@ -91,6 +91,18 @@ public class EventController {
         return "redirect:/event/" + event.getEventId();
     }
 
+    @PostMapping("/remove_invitation")
+    public String removeInvitation(@AuthenticationPrincipal User user,
+                                   @RequestParam("invitationId") Invitation invitation,
+                                   @RequestParam("eventId") Event event,
+                                   Model model) throws ParseException {
+        log.info("Start method removeInvitation");
+        if (user.getUserId().equals(invitation.getInvitorUser().getUserId())) {
+            invitationService.removeInvitation(invitation);
+        }
+        return "redirect:/event/" + event.getEventId();
+    }
+
     @GetMapping("/create")
     public String formEvent(@AuthenticationPrincipal User user) {
         log.info("Start method sendInvitation");
