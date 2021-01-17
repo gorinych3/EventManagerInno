@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 @Service
+@Transactional
 public class InvitationServiceImpl implements InvitationService {
 
     private final InvitationRepo invitationRepo;
@@ -211,4 +212,10 @@ public class InvitationServiceImpl implements InvitationService {
     public void removeInvitation(Invitation invitation) {
         invitationRepo.delete(invitation);
     }
+
+    @Override
+    public void removeInvitationsByEvent(Event event) {
+        invitationRepo.removeInvitationsByEvent(event);
+    }
+
 }
