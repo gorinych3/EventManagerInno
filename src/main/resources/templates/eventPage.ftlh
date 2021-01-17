@@ -133,20 +133,18 @@
     </table>
     <br>
     <div>
-        <#if invitations?? && invitations?size gt 0>
-            <#if event.action?? && user.username == event.ownerUser.username && !isResult>
-                <form action="start_event" method = "post">
-                    <input type="hidden" name="eventId" value="${event.eventId}" />
-                    <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                    <button type="submit" class="btn btn-primary">Жеребьевка</button>
-                </form>
-            <#elseif isResult>
-                <form action="resultAction" method = "post">
-                    <input type="hidden" name="eventId" value="${event.eventId}" />
-                    <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                    <button type="submit" class="btn btn-primary">Результаты жеребьевки</button>
-                </form>
-            </#if>
+        <#if event.action?? && usersCount gte 2 && user.username == event.ownerUser.username && !isResult>
+            <form action="start_event" method = "post">
+                <input type="hidden" name="eventId" value="${event.eventId}" />
+                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                <button type="submit" class="btn btn-primary">Жеребьевка</button>
+            </form>
+        <#elseif isResult>
+            <form action="resultAction" method = "post">
+                <input type="hidden" name="eventId" value="${event.eventId}" />
+                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                <button type="submit" class="btn btn-primary">Результаты жеребьевки</button>
+            </form>
         </#if>
     </div>
     <br/>

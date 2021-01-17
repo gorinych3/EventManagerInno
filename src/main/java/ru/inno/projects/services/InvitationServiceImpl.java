@@ -2,10 +2,10 @@ package ru.inno.projects.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.inno.projects.models.Event;
 import ru.inno.projects.models.Invitation;
@@ -16,6 +16,8 @@ import ru.inno.projects.repos.UserRepo;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Service
@@ -25,16 +27,21 @@ public class InvitationServiceImpl implements InvitationService {
     private final InvitationRepo invitationRepo;
     private final UserRepo userRepo;
     private final EventRepo eventRepo;
-    private final JavaMailSender mailSender;
-    private final EventMailServise mailServise;
+    private final EventMailService mailServise;
+    private final SenderMail2User senderMail2User;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Autowired
-    public InvitationServiceImpl(InvitationRepo invitationRepo, UserRepo userRepo, EventRepo eventRepo, JavaMailSender mailSender, EventMailServise mailServise) {
+    public InvitationServiceImpl(InvitationRepo invitationRepo,
+                                 UserRepo userRepo,
+                                 EventRepo eventRepo,
+                                 EventMailService mailServise,
+                                 SenderMail2User senderMail2User) {
         this.invitationRepo = invitationRepo;
         this.userRepo = userRepo;
         this.eventRepo = eventRepo;
-        this.mailSender = mailSender;
         this.mailServise = mailServise;
+        this.senderMail2User = senderMail2User;
     }
 
     @Override
@@ -55,6 +62,19 @@ public class InvitationServiceImpl implements InvitationService {
     @Override
     public List<Invitation> getInvitationsByEvent(Event event) {
         return invitationRepo.findInvitationsByEvent(event);
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public Invitation getInvitationByInvitedUserAndEvent(User user, Event event) {
+        return invitationRepo.findInvitationByInvitedUserAndEvent(user, event);
+    }
+
+
+    @Override
+    public Invitation getInvitationByEmailInvitationAndEvent(String email, Event event) {
+        return invitationRepo.findInvitationByEmailInvitationAndEvent(email, event);
     }
 
     @Override
@@ -78,7 +98,6 @@ public class InvitationServiceImpl implements InvitationService {
                 return false;
             }
         }
-
 
         invitation.setEvent(event);
         invitation.setInvitorUser(invitorUser);
@@ -104,9 +123,7 @@ public class InvitationServiceImpl implements InvitationService {
             );
 
             mailServise.send(invitedUser.getEmail(), "Приглашение на ивент", message);
-        }
-
-        else if (!invitation.getEmailInvitation().isEmpty()) {
+        } else if (!invitation.getEmailInvitation().isEmpty()) {
             final String message = String.format(
                     "Привет! \n" +
                             "Добро пожаловать в Event Manager. %s тебя пригласили на ивент под названием: %s, " +
@@ -117,8 +134,22 @@ public class InvitationServiceImpl implements InvitationService {
                     invitation.getEmailInvitation()
             );
 
+            log.info("ОТПРАВЛЯЕМ ПИСЬМО ЮЗЕРУ");
+
             mailServise.send(invitation.getEmailInvitation(), "Приглашение на ивент", message);
         }
+        return true;
+    }
+
+    @Override
+    public boolean sendInvitation(Event event, User user, List<String> emails) {
+        log.info("Запуск нового потока для отправки пачки приглашений");
+        senderMail2User.setEmails(emails);
+        senderMail2User.setEvent(event);
+        senderMail2User.setInvitorUser(user);
+        executorService.submit(senderMail2User);
+        executorService.shutdown();
+        log.info("Все письма отправлены, останавливаем поток");
         return true;
     }
 
@@ -186,6 +217,5 @@ public class InvitationServiceImpl implements InvitationService {
     public void removeInvitationsByEvent(Event event) {
         invitationRepo.removeInvitationsByEvent(event);
     }
-
 
 }

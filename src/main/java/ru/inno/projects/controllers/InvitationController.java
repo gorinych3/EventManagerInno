@@ -1,6 +1,5 @@
 package ru.inno.projects.controllers;
 
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,11 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.inno.projects.models.Invitation;
 import ru.inno.projects.models.User;
-import ru.inno.projects.services.EventService;
 import ru.inno.projects.services.InvitationService;
-import ru.inno.projects.services.UserService;
 
-import java.text.ParseException;
 import java.util.List;
 
 @Slf4j
@@ -25,15 +21,11 @@ import java.util.List;
 @RequestMapping("/invitations")
 public class InvitationController {
 
-    private final EventService eventService;
-    private final UserService userService;
     private final InvitationService invitationService;
 
 
     @Autowired
-    public InvitationController(EventService eventService, UserService userService, InvitationService invitationService) {
-        this.eventService = eventService;
-        this.userService = userService;
+    public InvitationController(InvitationService invitationService) {
         this.invitationService = invitationService;
     }
 
@@ -54,8 +46,7 @@ public class InvitationController {
 
     @PostMapping("/mark_invitation_accepted")
     public String markInvitationAccepted(@AuthenticationPrincipal User user,
-                                         @RequestParam("invitationId") Invitation invitation,
-                                         Model model) throws ParseException {
+                                         @RequestParam("invitationId") Invitation invitation) {
         log.info("Start method markInvitationAccepted");
         if (user.getUserId().equals(invitation.getInvitedUser().getUserId())) {
             invitationService.markInvitationAccepted(invitation);
@@ -65,8 +56,7 @@ public class InvitationController {
 
     @PostMapping("/mark_invitation_unaccepted")
     public String markInvitationUnAccepted(@AuthenticationPrincipal User user,
-                                           @RequestParam("invitationId") Invitation invitation,
-                                           Model model) throws ParseException {
+                                           @RequestParam("invitationId") Invitation invitation) {
         log.info("Start method markInvitationUnAccepted");
         if (user.getUserId().equals(invitation.getInvitedUser().getUserId())) {
             invitationService.markInvitationUnAccepted(invitation);

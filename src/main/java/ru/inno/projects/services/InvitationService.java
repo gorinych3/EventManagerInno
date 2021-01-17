@@ -18,6 +18,8 @@ public interface InvitationService {
 
     boolean sendInvitation(Event event, User invitorUser, String email);
 
+    boolean sendInvitation(Event event, User invitorUser, List<String> emails);
+
     int updateInvitationsOnAddingNewUser(User user);
 
     Invitation markInvitationRead(Invitation invitation);
@@ -33,4 +35,9 @@ public interface InvitationService {
     void removeInvitation(Invitation invitation);
 
     void removeInvitationsByEvent(Event event);
+
+    Invitation getInvitationByEmailInvitationAndEvent(String email, Event event);
+
+    Invitation getInvitationByInvitedUserAndEvent(User user, Event event);
+
 }
