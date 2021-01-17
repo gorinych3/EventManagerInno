@@ -20,6 +20,8 @@ public interface EventService {
 
     Set<User> createUserList(int countUser, Event event);
 
+    Event save(Event event);
+
     Event save(Event event, Integer teams, Integer playersOnTeam);
 
     boolean getBoolResultAction(Event event);

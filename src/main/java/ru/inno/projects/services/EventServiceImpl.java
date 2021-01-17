@@ -57,6 +57,11 @@ public class EventServiceImpl implements EventService {
         return eventRepo.findEventByEventId(eventId);
     }
 
+    @Override
+    public Event save(Event event) {
+        return this.save(event, null, null);
+    }
+
     @Transactional
     @Override
     public Event save(Event event, Integer teams, Integer playersOnTeam) {

@@ -149,6 +149,7 @@ public class EventController {
     @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/create")
     public String formEvent(@AuthenticationPrincipal User user,
+                            @RequestParam(value = "eventId", required = false) Event event,
                             @RequestParam(value = "eventName", required = false) String name,
                             @RequestParam(value = "eventDate", required = false) String eventDate,
                             @RequestParam(value = "eventTossDate", required = false) String eventTossDate,
@@ -157,16 +158,23 @@ public class EventController {
                             @RequestParam(value = "playersOnTeam", required = false) Integer playersOnTeam,
                             Model model) throws ParseException {
         log.info("Start method formEvent PostMapping");
-        Event newEvent = new Event(name, LocalDateTime.now());
+        Event eventToSave;
+        if (event == null) {
+            eventToSave = new Event(name, LocalDateTime.now());
+        } else {
+            eventToSave = event;
+            eventToSave.setEventName(name);
+        }
+
         Gson json = new Gson();
         List<String> array = json.fromJson(membersJSON, new TypeToken<List<String>>() {
         }.getType());
-        newEvent.setEventDate(eventDate == null || eventDate.isEmpty() ?
+        eventToSave.setEventDate(eventDate == null || eventDate.isEmpty() ?
                 null : LocalDateTime.parse(eventDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
-        newEvent.setEventTossDate(eventTossDate == null || eventTossDate.isEmpty() ?
+        eventToSave.setEventTossDate(eventTossDate == null || eventTossDate.isEmpty() ?
                 null : LocalDate.parse(eventTossDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        newEvent.setOwnerUser(user);
-        Event savedEvent = eventService.save(newEvent, teams, playersOnTeam);
+        eventToSave.setOwnerUser(user);
+        Event savedEvent = eventService.save(eventToSave, teams, playersOnTeam);
         if(array != null) {
             array.forEach((m) ->
             {
