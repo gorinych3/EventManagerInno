@@ -16,10 +16,10 @@
                                     <input type="datetime-local" name="eventDate" class="form-control" placeholder="Event Date"/>
                                     <label class="col-sm-2 col-form-label">Дата проведения жеребьевки:</label>
                                     <input type="date" name="eventTossDate" class="form-control" placeholder="Event Toss Date"/>
-                                    <label class="col-sm-2 col-form-label">Количество команд:</label>
-                                    <input type="number" name="teams" class="form-control" placeholder="number of teams"/>
-                                    <label class="col-sm-2 col-form-label">Количество участников в команде:</label>
-                                    <input type="number" name="playersOnTeam" class="form-control" placeholder="number of players in the team"/>
+<#--                                    <label class="col-sm-2 col-form-label">Количество команд:</label>-->
+<#--                                    <input type="number" name="teams" class="form-control" placeholder="number of teams"/>-->
+<#--                                    <label class="col-sm-2 col-form-label">Количество участников в команде:</label>-->
+<#--                                    <input type="number" name="playersOnTeam" class="form-control" placeholder="number of players in the team"/>-->
                                     <input type="hidden" id="membersJSON" name = "membersJSON" value=""/>
                                 </div>
                             </div>

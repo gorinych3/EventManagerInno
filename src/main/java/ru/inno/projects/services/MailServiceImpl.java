@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class MailServiceImpl implements EventMailServise{
+public class MailServiceImpl implements EventMailService {
 
     @Value("${spring.mail.username}")
     private String userName;
@@ -22,7 +22,7 @@ public class MailServiceImpl implements EventMailServise{
     }
 
     @Override
-    public void send(String emailTo, String subject, String message){
+    public void send(String emailTo, String subject, String message) {
         log.info("Start method send from MailServiceImpl");
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 

@@ -80,7 +80,7 @@
     </table>
     <br>
     <div>
-        <#if user.username == event.ownerUser.username && !isResult && event.action??>
+        <#if user.username == event.ownerUser.username && !isResult && event.action?? && usersCount gte 2>
             <form action="start_event" method = "post">
                 <input type="hidden" name="eventId" value="${event.eventId}" />
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />

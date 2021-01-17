@@ -22,13 +22,13 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
-    private final EventMailServise mailServise;
+    private final EventMailService mailServise;
 
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(UserRepo userRepo,
-                           EventMailServise mailServise,
+                           EventMailService mailServise,
                            PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.mailServise = mailServise;
