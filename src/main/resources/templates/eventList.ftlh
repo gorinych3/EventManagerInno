@@ -6,6 +6,7 @@
         <tr>
             <th>Название ивента</th>
             <th>Дата создания ивента</th>
+
         </tr>
         </thead>
         <tbody>
@@ -14,6 +15,7 @@
             <tr>
                 <td><a href="/event/${event.eventId}">${event.eventName}</a></td>
                 <td>${event.createDate}</td>
+
             </tr>
         </#list>
         <#else>

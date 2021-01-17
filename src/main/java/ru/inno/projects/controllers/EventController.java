@@ -92,17 +92,33 @@ public class EventController {
 
         String email = form.get("email");
 
+
+        Invitation invitationByEmailInvitationAndEvent = null;
+        Invitation invitationByInvitedUserAndEvent = null;
+
+
         User invitedUser = userRepo.findUserByEmail(email);
-        Invitation invitationByEmailInvitationAndEvent = invitationRepo.findInvitationByEmailInvitationAndEvent(email, event);
-        Invitation invitationByInvitedUserAndEvent = invitationRepo.findInvitationByInvitedUserAndEvent(invitedUser, event);
+        if (invitedUser != null) {
+            invitationByInvitedUserAndEvent = invitationRepo.findInvitationByInvitedUserAndEvent(invitedUser, event);
+        } else {
+            invitationByEmailInvitationAndEvent = invitationRepo.findInvitationByEmailInvitationAndEvent(email, event);
+        }
+
+        List<Invitation> invitationsByEvent = invitationService.getInvitationsByEvent(event);
 
         if (invitationByEmailInvitationAndEvent != null || invitationByInvitedUserAndEvent != null) {
             model.addAttribute("errorMessage", "Вы уже добавили этого пользователя");
             model.addAttribute("event", event);
+            model.addAttribute("user", user);
+            model.addAttribute("isResult", eventService.getBoolResultAction(event));
+            model.addAttribute("invitations", invitationsByEvent);
             return "eventPage";
         } else if (!invitationService.sendInvitation(event, user, email)) {
             model.addAttribute("errorMessage", "Что-то пошло не так при отсылке приглашения");
             model.addAttribute("event", event);
+            model.addAttribute("user", user);
+            model.addAttribute("isResult", eventService.getBoolResultAction(event));
+            model.addAttribute("invitations", invitationsByEvent);
             return "eventPage";
         }
 
@@ -151,10 +167,12 @@ public class EventController {
                 null : LocalDate.parse(eventTossDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         newEvent.setOwnerUser(user);
         Event savedEvent = eventService.save(newEvent, teams, playersOnTeam);
-        array.forEach((m) ->
-        {
-            invitationService.sendInvitation(savedEvent, user, m);
-        });
+        if(array != null) {
+            array.forEach((m) ->
+            {
+                invitationService.sendInvitation(savedEvent, user, m);
+            });
+        }
         model.addAttribute("event", savedEvent);
         return "redirect:/event/" + savedEvent.getEventId();
     }
@@ -182,5 +200,16 @@ public class EventController {
         model.addAttribute("action", action);
         model.addAttribute("playActions", actionService.getAllPlayActionsByAction(action));
         return "eventResultPage";
+    }
+
+    @PostMapping("/remove_event")
+    public String removeEvent(@AuthenticationPrincipal User user,
+                              @RequestParam("eventId") Event event, Model model) {
+
+        invitationService.removeInvitationsByEvent(event);
+        if(event.getAction() != null) actionService.removeAction(event.getAction());
+        eventService.removeEvent(event);
+
+        return "redirect:/event/user";
     }
 }

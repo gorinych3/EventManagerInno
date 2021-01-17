@@ -23,18 +23,28 @@
         <div class="col"><#if event.eventTossDate??>${event.eventTossDate}<#else>Не назначено</#if></div>
     </div>
     <br/>
+    <div class="row">
+        <div class="col">
+            <form action="remove_event" method = "post">
+                <input type="hidden" name="eventId" value="${event.eventId}" />
+                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                <button type="submit" class="btn btn-primary">Удалить ивент</button>
+            </form>
+        </div>
+    </div>
+    <br/>
     <h2>Добавить приглашенных</h2>
     <div class="row">
         <div class="col">
-    <form action="send_invitation" method = "post">
-        <div class="form-group">
-            <label for="email">Email того, кого хочу пригласить</label>
-            <input type="email" class="form-control" placeholder="Введите email" id="email" name="email">
-        </div>
-        <input type="hidden" name="eventId" value="${event.eventId}" />
-        <input type="hidden" name="_csrf" value="${_csrf.token}" />
-        <button type="submit" class="btn btn-primary">Пригласить</button>
-    </form>
+            <form action="send_invitation" method = "post">
+                <div class="form-group">
+                    <label for="email">Email того, кого хочу пригласить</label>
+                    <input type="email" class="form-control" placeholder="Введите email" id="email" name="email">
+                </div>
+                <input type="hidden" name="eventId" value="${event.eventId}" />
+                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                <button type="submit" class="btn btn-primary">Пригласить</button>
+            </form>
         </div>
     </div>
     <br/>
@@ -50,13 +60,13 @@
         </tr>
         </thead>
         <tbody>
-        <#if invitations?size gt 0>
+        <#if invitations?? && invitations?size gt 0>
 
             <#list invitations as invitation>
                 <tr>
                     <td>${invitation.creationDate}</td>
                     <td><#if invitation.invitedUser??>
-                            <#if invitation.emailInvitation??>${invitation.emailInvitation}<#else>${invitation.invitedUser.username}</#if>
+                            <#if invitation.emailInvitation??>${invitation.emailInvitation}<#else>${invitation.invitedUser.email} (${invitation.invitedUser.username})</#if>
                         <#elseif invitation.emailInvitation??>
                             ${invitation.emailInvitation}</#if></td>
                     <td>${invitation.accepted?then('Да', 'Нет')}</td>
@@ -76,23 +86,27 @@
                 <td colspan="5"><h5><span class="badge badge-secondary">Список приглашенных пуст.</span></h5></td>
             </tr>
         </#if>
+
         </tbody>
     </table>
     <br>
     <div>
-        <#if user.username == event.ownerUser.username && !isResult && event.action??>
-            <form action="start_event" method = "post">
-                <input type="hidden" name="eventId" value="${event.eventId}" />
-                <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                <button type="submit" class="btn btn-primary">Жеребьевка</button>
-            </form>
-        <#elseif isResult>
-            <form action="resultAction" method = "post">
-                <input type="hidden" name="eventId" value="${event.eventId}" />
-                <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                <button type="submit" class="btn btn-primary">Результаты жеребьевки</button>
-            </form>
+        <#if invitations?? && invitations?size gt 0>
+            <#if event.action?? && user.username == event.ownerUser.username && !isResult>
+                <form action="start_event" method = "post">
+                    <input type="hidden" name="eventId" value="${event.eventId}" />
+                    <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-primary">Жеребьевка</button>
+                </form>
+            <#elseif isResult>
+                <form action="resultAction" method = "post">
+                    <input type="hidden" name="eventId" value="${event.eventId}" />
+                    <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-primary">Результаты жеребьевки</button>
+                </form>
+            </#if>
         </#if>
     </div>
     <br/>
+
 </@c.page>

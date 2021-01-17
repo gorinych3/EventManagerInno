@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.inno.projects.models.*;
-import ru.inno.projects.repos.ActionRepo;
-import ru.inno.projects.repos.EventRepo;
-import ru.inno.projects.repos.PlayActionRepo;
-import ru.inno.projects.repos.UserRepo;
+import ru.inno.projects.repos.*;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -24,13 +21,15 @@ public class EventServiceImpl implements EventService {
     private final EventRepo eventRepo;
     private final UserRepo userRepo;
     private final ActionRepo actionRepo;
+    private final InvitationRepo invitationRepo;
     private final PlayActionRepo playActionRepo;
 
     @Autowired
-    public EventServiceImpl(EventRepo eventRepo, UserRepo userRepo, ActionRepo actionRepo, PlayActionRepo playActionRepo) {
+    public EventServiceImpl(EventRepo eventRepo, UserRepo userRepo, ActionRepo actionRepo, InvitationRepo invitationRepo, PlayActionRepo playActionRepo) {
         this.eventRepo = eventRepo;
         this.userRepo = userRepo;
         this.actionRepo = actionRepo;
+        this.invitationRepo = invitationRepo;
         this.playActionRepo = playActionRepo;
     }
 
@@ -81,6 +80,11 @@ public class EventServiceImpl implements EventService {
         action.setEvent(event);
         event.setAction(action);
         return eventRepo.save(event);
+    }
+
+    @Override
+    public void removeEvent(Event event) {
+        eventRepo.delete(event);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

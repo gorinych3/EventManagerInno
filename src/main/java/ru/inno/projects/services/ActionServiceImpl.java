@@ -51,4 +51,10 @@ public class ActionServiceImpl implements ActionService {
     public Set<PlayAction> getAllPlayActionsByAction(Action action) {
         return new HashSet<>(playActionRepo.findAllPlayActionsByAction(action));
     }
+
+    @Override
+    public void removeAction(Action action) {
+        actionRepo.delete(action);
+    }
+
 }

@@ -31,4 +31,6 @@ public interface InvitationService {
     int getAmountOfNotReadInvitationsForCurrentUser();
 
     void removeInvitation(Invitation invitation);
+
+    void removeInvitationsByEvent(Event event);
 }
