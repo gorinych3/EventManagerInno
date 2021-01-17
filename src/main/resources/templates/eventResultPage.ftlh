@@ -23,30 +23,52 @@
         <div class="col">${action.actionName}</div>
     </div>
     <br/>
-    <h2>Список всех игр</h2>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Team 1</th>
-            <th>Team 2</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <#if playActions?size gt 0>
-            <#list playActions as playAction>
-                <tr>
-                    <td>${playAction.master.teamName}</td>
-                    <td>${playAction.slave.teamName}</td>
-                </tr>
-            </#list>
-        <#else>
+    <h2>Результаты жеребьевки</h2>
+    <br>
+    <#if santa == 0>
+        <table class="table table-striped">
+            <thead>
             <tr>
-                <td colspan="3"><h5><span class="badge badge-secondary">Список пуст.</span></h5></td>
+                <th>Team 1</th>
+                <th>Team 2</th>
+                <th></th>
             </tr>
-        </#if>
+            </thead>
+            <tbody>
+
+            <#if playActions?size gt 0>
+                <#list playActions as playAction>
+                    <tr>
+                        <td>${playAction.master.teamName}</td>
+                        <td>${playAction.slave.teamName}</td>
+                    </tr>
+                </#list>
+            <#else>
+                <tr>
+                    <td colspan="3"><h5><span class="badge badge-secondary">Список пуст.</span></h5></td>
+                </tr>
+            </#if>
+
         </tbody>
     </table>
+    <#else>
+        <div>
+            <h5>
+                <#list playActions as playAction>
+                    <#if playAction.master.teamName == user.username>
+                        Поздравляем!!!!
+                        Вы дарите подарок участнику ${playAction.slave.teamName} (${playAction.slave.users[0].email})
+                    <#elseif user.username == event.ownerUser.username>
+                        <div class="row">
+                        ${playAction.master.teamName} (${playAction.master.users[0].email}) дарит подарок
+                        участнику ${playAction.slave.teamName} (${playAction.slave.users[0].email})
+                        </div>
+                        <br>
+                    </#if>
+                </#list>
+            </h5>
+        </div>
+    </#if>
     <div>
         <#if user.username == event.ownerUser.username>
             <form action="start_event" method = "post">

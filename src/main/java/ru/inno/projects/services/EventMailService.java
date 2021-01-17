@@ -1,6 +1,6 @@
 package ru.inno.projects.services;
 
-public interface EventMailServise {
+public interface EventMailService {
 
     void send(String emailTo, String subject, String message);
 }
