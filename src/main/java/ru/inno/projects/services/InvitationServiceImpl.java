@@ -113,9 +113,9 @@ public class InvitationServiceImpl implements InvitationService {
             final String message = String.format(
                     "Привет! \n" +
                             "%s тебя пригласили на ивент под названием: %s. \n" +
-                            "для просмотра ивента перейди по ссылке: " +
+                            "Для просмотра ивента перейди по ссылке: " +
                             "http://localhost:8080/event/%s \n" +
-                            "для участия в ивенте подтверди приглашение по ссылке: " +
+                            "Для участия в ивенте подтверди приглашение по ссылке: " +
                             "http://localhost:8080/invitations/user",
                     invitorUser.getUsername(),
                     event.getEventName(),
