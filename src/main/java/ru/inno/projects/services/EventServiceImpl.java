@@ -23,14 +23,16 @@ public class EventServiceImpl implements EventService {
     private final ActionRepo actionRepo;
     private final InvitationRepo invitationRepo;
     private final PlayActionRepo playActionRepo;
+    private final EventMailService mailServise;
 
     @Autowired
-    public EventServiceImpl(EventRepo eventRepo, UserRepo userRepo, ActionRepo actionRepo, InvitationRepo invitationRepo, PlayActionRepo playActionRepo) {
+    public EventServiceImpl(EventRepo eventRepo, UserRepo userRepo, ActionRepo actionRepo, InvitationRepo invitationRepo, PlayActionRepo playActionRepo, EventMailService mailServise) {
         this.eventRepo = eventRepo;
         this.userRepo = userRepo;
         this.actionRepo = actionRepo;
         this.invitationRepo = invitationRepo;
         this.playActionRepo = playActionRepo;
+        this.mailServise = mailServise;
     }
 
     @Override
@@ -133,6 +135,19 @@ public class EventServiceImpl implements EventService {
             event.setUsers(userSet);
             action.setPlayActions(playActions);
             event.setAction(action);
+
+            for (User user : userSet) {
+                final String message = String.format(
+                        "Привет! \n" +
+                                "Произошла жеребьевка ивента под названием:: %s. \n" +
+                                "Для просмотра результатов перейди по ссылке: " +
+                                "http://localhost:8080/event/%s \n" +
+                                "и нажми на кнопку \"Результаты жеребьевки\"",
+                        event.getEventName(),
+                        event.getEventId()
+                );
+                mailServise.send(user.getEmail(), "Результаты жеребьевки", message);
+            }
         }
         return event;
     }
