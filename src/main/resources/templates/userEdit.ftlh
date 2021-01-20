@@ -4,8 +4,12 @@
 
     <form action="/user" method="post">
         <div class="form-group">
-            <label for="name">Имя:</label>
-            <input type="text" name="userName" class="form-control" placeholder="Введите имя пользователя" value="${user.username}">
+            <label for="email">E-mail пользователя:</label>
+            <input type="text" name="email" class="form-control" placeholder="" disabled value="${user.email}">
+        </div>
+        <div class="form-group">
+            <label for="name">Имя пользователя:</label>
+            <input type="text" name="username" class="form-control" placeholder="Введите новое имя пользователя" value="${user.username}">
         </div>
         <#list roles as role>
             <div class="form-check">

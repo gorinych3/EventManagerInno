@@ -7,12 +7,12 @@
                 <th scope="col">
                     <div>
                         <form action="/event/create" method="post">
-                            <p><b>Создание эвента</b></p>
+                            <p><b>Создание ивента</b></p>
                             <div class="form-group row">
                                 <div class="col-sm-6">
-                                    <label class="col-sm-2 col-form-label">Название эвента:</label>
+                                    <label class="col-sm-2 col-form-label">Название ивента:</label>
                                     <input type="text" name="eventName" class="form-control" placeholder="Event name" />
-                                    <label class="col-sm-2 col-form-label">Дата проведения эвента:</label>
+                                    <label class="col-sm-2 col-form-label">Дата проведения ивента:</label>
                                     <input type="datetime-local" name="eventDate" class="form-control" placeholder="Event Date"/>
                                     <label class="col-sm-2 col-form-label">Дата проведения жеребьевки:</label>
                                     <input type="date" name="eventTossDate" class="form-control" placeholder="Event Toss Date"/>
@@ -23,7 +23,7 @@
                                     <input type="hidden" id="membersJSON" name = "membersJSON" value=""/>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" type="submit">Создать эвент</button>
+                            <button class="btn btn-primary" type="submit">Создать ивент</button>
                             <input type="hidden" name="_csrf" value="${_csrf.token}" />
                         </form>
                         <div>

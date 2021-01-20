@@ -2,7 +2,7 @@
         <label for="inputEmail">E-mail</label>
         <input type="email" name="email" id="inputEmail"
                class="form-control"
-               placeholder="E-mail" required autofocus
+               placeholder="E-mail" readonly
                value="<#if user??>${user.email}</#if><#if userToSave??>${userToSave.email}</#if><#if emailValue??>${emailValue}</#if>"
         >
         <#if emailError??>
