@@ -1,6 +1,6 @@
 <#import "parts/common.ftlh" as c>
 <@c.page>
-
+    <link href="floating-labels.css" rel="stylesheet">
     <div>
         <table style="margin-top: 10px" class="table">
             <tr>
@@ -26,12 +26,16 @@
                             <button class="btn btn-primary" type="submit">Создать ивент</button>
                             <input type="hidden" name="_csrf" value="${_csrf.token}" />
                         </form>
-                        <div>
-                            <p><b>Email участника:</b><br>
-                                <input id="inp" type="text" size="40">
-                            </p>
-                            <p><button onclick="getInputValue()">Добавление участника</button></p>
-                        </div>
+                        <hr class="featurette-divider">
+
+                        <form class="form-signin">
+                            <div class="form-label-group">
+                                <label for="inputEmail">Email участника</label>
+                                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+                            </div>
+                            <button class="btn btn-lg btn-primary btn-block" onclick="getInputValue()" type="submit">Добавить участника</button>
+                        </form>
+
                     </div>
                 </th>
                 <th scope="col">
@@ -132,9 +136,13 @@
         };
 
         function getInputValue() {
-            var p = document.getElementById("inp");
+            let p = document.getElementById("inputEmail");
+            if (p.value == ""){
+                return;
+            }
             updateMembers(p.value);
             renewData();
+            p.value = "";
         };
     </script>
 </@c.page>
