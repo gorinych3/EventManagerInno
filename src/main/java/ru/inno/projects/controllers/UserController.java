@@ -51,11 +51,11 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public String userSave(
-            @RequestParam String email,
+            @RequestParam String username,
             @RequestParam Map<String, String> form,
             @RequestParam("userId") User user) {
         log.info("Start method userSave from UserController");
-        user.setEmail(email);
+        user.setUsername(username);
 
         userService.updateUserRoles(user, form);
 
@@ -96,7 +96,7 @@ public class UserController {
 
         userService.updateUser(user, userToSave.getUsername(), userToSave.getPassword(), userToSave.getPhoneNumber(), userToSave.getEmail());
 
-        return "redirect:/user/profile";
+        return "redirect:/login";
     }
 
     @PreAuthorize("hasAuthority('USER')")

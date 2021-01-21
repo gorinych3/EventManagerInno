@@ -148,7 +148,6 @@ public class InvitationServiceImpl implements InvitationService {
         senderMail2User.setEvent(event);
         senderMail2User.setInvitorUser(user);
         executorService.submit(senderMail2User);
-        executorService.shutdown();
         log.info("Все письма отправлены, останавливаем поток");
         return true;
     }
