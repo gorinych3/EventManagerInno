@@ -12,11 +12,11 @@
     </div>
     <div class="row">
         <div class="col">Дата создания</div>
-        <div class="col">${event.createDate}</div>
+        <div class="col">${event.createDate.toLocalDate()}</div>
     </div>
     <div class="row">
         <div class="col">Дата проведения</div>
-        <div class="col"><#if event.eventDate??>${event.eventDate}<#else>Не назначено</#if></div>
+        <div class="col"><#if event.eventDate??>${event.eventDate.toLocalDate()}<#else>Не назначено</#if></div>
     </div>
     <div class="row">
         <div class="col">Action</div>
