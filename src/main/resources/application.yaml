@@ -6,7 +6,7 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yaml
   # Hibernate & JPA
   jpa:
-    show-sql: true
+    show-sql: false
     open-in-view: false
     hibernate:
       ddl-auto: none
@@ -40,5 +40,5 @@ logging:
     liquibase: INFO
     org:
       hibernate:
-        type: TRACE
+        type: ERROR
 #    org.springframework.web: TRACE

@@ -78,6 +78,8 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     public boolean sendInvitation(Event event, User invitorUser, String email) {
+        String message = "";
+        String sendEmail = "";
         Invitation invitation = new Invitation();
 
         User userToInvite = userRepo.findUserByEmail(email);
@@ -109,7 +111,7 @@ public class InvitationServiceImpl implements InvitationService {
         User invitedUser = userRepo.findUserByEmail(email);
 
         if (invitedUser != null) {
-            final String message = String.format(
+                message = String.format(
                     "Привет! \n" +
                             "%s тебя пригласили на ивент под названием: %s. \n" +
                             "для просмотра ивента перейди по ссылке: " +
@@ -120,10 +122,10 @@ public class InvitationServiceImpl implements InvitationService {
                     event.getEventName(),
                     event.getEventId()
             );
+            sendEmail = invitedUser.getEmail();
 
-            mailServise.send(invitedUser.getEmail(), "Приглашение на ивент", message);
         } else if (!invitation.getEmailInvitation().isEmpty()) {
-            final String message = String.format(
+            message = String.format(
                     "Привет! \n" +
                             "Добро пожаловать в Event Manager. %s тебя пригласили на ивент под названием: %s, " +
                             "для участия в ивенте перейди по ссылке: " +
@@ -132,10 +134,14 @@ public class InvitationServiceImpl implements InvitationService {
                     event.getEventName(),
                     invitation.getEmailInvitation()
             );
-
-            log.info("ОТПРАВЛЯЕМ ПИСЬМО ЮЗЕРУ");
-
-            mailServise.send(invitation.getEmailInvitation(), "Приглашение на ивент", message);
+            sendEmail = invitation.getEmailInvitation();
+        }
+        if (invitedUser != null || !invitation.getEmailInvitation().isEmpty()) {
+            try {
+                mailServise.send(sendEmail, "Приглашение на ивент", message);
+            }catch (Exception e){
+                log.error("Не удалось отправить приглашение на почту участнику");
+            }
         }
         return true;
     }
@@ -147,7 +153,7 @@ public class InvitationServiceImpl implements InvitationService {
         senderMail2User.setEvent(event);
         senderMail2User.setInvitorUser(user);
         executorService.submit(senderMail2User);
-        executorService.shutdown();
+        //executorService.shutdown();
         log.info("Все письма отправлены, останавливаем поток");
         return true;
     }
