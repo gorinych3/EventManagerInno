@@ -16,4 +16,6 @@ public interface ActionService {
     Event getEventByAction(Action action);
 
     Set<PlayAction> getAllPlayActionsByAction(Action action);
+
+    void removeAction(Action action);
 }

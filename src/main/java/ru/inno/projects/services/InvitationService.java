@@ -34,7 +34,10 @@ public interface InvitationService {
 
     void removeInvitation(Invitation invitation);
 
+    void removeInvitationsByEvent(Event event);
+
     Invitation getInvitationByEmailInvitationAndEvent(String email, Event event);
 
     Invitation getInvitationByInvitedUserAndEvent(User user, Event event);
+
 }

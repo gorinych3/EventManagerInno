@@ -6,6 +6,7 @@
         <tr>
             <th>Название ивента</th>
             <th>Дата создания ивента</th>
+
         </tr>
         </thead>
         <tbody>
@@ -13,7 +14,8 @@
         <#list events as event>
             <tr>
                 <td><a href="/event/${event.eventId}">${event.eventName}</a></td>
-                <td>${event.createDate}</td>
+                <td>${event.createDate.toLocalDate()}</td>
+
             </tr>
         </#list>
         <#else>

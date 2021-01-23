@@ -1,36 +1,51 @@
 <#import "parts/common.ftlh" as c>
 <@c.page>
-<#--<main role="main">-->
-<#--  <!-- Main jumbotron for a primary marketing message or call to action &ndash;&gt;-->
-<#--  <div class="jumbotron">-->
-<#--    <div class="container">-->
-<#--      <h1 class="display-3">Добро пожаловать!</h1>-->
-<#--      <p>Здесь должно быть, крутое описание!</p>-->
-<#--      <p><a class="btn btn-primary btn-lg" href="#" role="button">Узнай больше! &raquo;</a></p>-->
-<#--    </div>-->
-<#--  </div>-->
+    <link href="jumbotron.css" rel="stylesheet">
+    <link href="carousel.css" rel="stylesheet">
+    <main role="main">
+        <div class="jumbotron">
+            <div class="container">
+                <h1 class="display-3">«Тайный Санта»</h1>
+                <p>Большинство российских компаний отмечают Новый год корпоративом. Предновогодняя вечеринка в ресторане или кафе как лакмусовая бумажка для сотрудников: если проводится — значит, не так плохи дела у работодателя. Но что делать, если Новый год почему-то «отменили»? Всё, кина не будет? Как подарить коллективу праздничное настроение, когда бюджет весьма ограничен или его нет вовсе?
+                </p>
+                <p><a class="btn btn-primary btn-lg" href="/event/create" role="button">Заказать игру</a></p>
+            </div>
+        </div>
 
-<#--  <div class="container">-->
-<#--    <!-- Example row of columns &ndash;&gt;-->
-<#--    <div class="row">-->
-<#--      <div class="col-md-4">-->
-<#--        <h2>Тарифы</h2>-->
-<#--        <p>Узнай больше о тарифах! </p>-->
-<#--        <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>-->
-<#--      </div>-->
-<#--      <div class="col-md-4">-->
-<#--        <h2>Пруфы</h2>-->
-<#--        <p>Куча пруфов, с различных праздников! </p>-->
-<#--        <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>-->
-<#--      </div>-->
-<#--    </div>-->
-<#--    <hr>-->
-<#--  </div> <!-- /container &ndash;&gt;-->
-<#--</main>-->
+<div class="container marketing">
 
-  <h2>Простая стартовая страница</h2>
-  <br>
+        <hr class="featurette-divider">
 
-<#--<span><a href="/user/account">Account</a></span> &lt;#&ndash;  добавлено Ганзя&ndash;&gt;-->
+        <div class="row featurette">
+          <div class="col-md-7 order-md-2">
+            <h2 class="featurette-heading">Праздник к нам приходит! </h2>
+            <p class="lead">Индивидуальный подбор и торжественное вручение подарков сотрудникам, партнёрам, клиентам, приуроченное к конкретному событию или дате: новогоднему корпоративу, юбилею компании, профессиональному празднику.</p>
+          </div>
+          <div class="col-md-5 order-md-1">
+            <img class="rounded-circle" src="den_rojdenya.jpg" alt="Generic placeholder image" width="300" height="300">
+          </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <div class="row featurette">
+          <div class="col-md-5">
+            <h2 class="featurette-heading">Дизайн мероприятия</span></h2>
+            <p class="lead">Разработаем единый стиль вашего события и продумаем все в индивидуальном дизайне мероприятия.</p>
+          </div>
+          <div class="col-md-3">
+            <img class="rounded-circle" src="secret-santa.jpg" alt="Generic placeholder image" width="300" height="300">
+          </div>
+        </div>
+      </div>
+
+
+        <hr class="featurette-divider">
+        <footer class="container">
+            <p class="float-right"><a href="#">Back to top</a></p>
+            <p>&copy; 2021 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+        </footer>
+    </main>
+
 
 </@c.page>
