@@ -30,6 +30,8 @@
         <button type="submit" class="btn btn-primary" style="visibility: hidden" id="saveButton">Сохранить</button>
 
     </form>
+
+    <#if user.userId == event.ownerUser.userId >
     <script>
         function makeItEditable() {
             const fields = ['name', 'event_date', 'event_toss_date'];
@@ -59,7 +61,6 @@
 
         }
     </script>
-
     <br/>
     <div class="row">
         <div class="col">
@@ -75,6 +76,7 @@
         </div>
     </div>
     <br/>
+
     <h2>Добавить приглашенных</h2>
     <div class="row">
         <div class="col">
@@ -90,15 +92,18 @@
         </div>
     </div>
     <br/>
+    </#if>
     <h2>Список приглашенных</h2>
     <table class="table table-striped">
         <thead>
         <tr>
             <th>Дата приглашения</th>
             <th>Кого пригласили</th>
+            <#if user.userId == event.ownerUser.userId >
             <th>Принято</th>
             <th>Прочитано</th>
             <th>Действия</th>
+            </#if>
         </tr>
         </thead>
         <tbody>
@@ -106,11 +111,12 @@
 
             <#list invitations as invitation>
                 <tr>
-                    <td>${invitation.creationDate}</td>
+                    <td>${invitation.creationDate.toLocalDate()}</td>
                     <td><#if invitation.invitedUser??>
                             <#if invitation.emailInvitation??>${invitation.emailInvitation}<#else>${invitation.invitedUser.email} (${invitation.invitedUser.username})</#if>
                         <#elseif invitation.emailInvitation??>
                             ${invitation.emailInvitation}</#if></td>
+                    <#if user.userId == event.ownerUser.userId >
                     <td>${invitation.accepted?then('Да', 'Нет')}</td>
                     <td>${invitation.informed?then('Да', 'Нет')}</td>
                     <td>
@@ -121,6 +127,7 @@
                             <button class="btn btn-primary" type="submit" >Отозвать приглашение</button>
                         </form>
                     </td>
+                    </#if>
                 </tr>
             </#list>
         <#else>
@@ -133,7 +140,7 @@
     </table>
     <br>
     <div>
-        <#if event.action?? && usersCount gte 2 && user.username == event.ownerUser.username && !isResult>
+        <#if event.action?? && usersCount gte 2 && user.userId == event.ownerUser.userId && !isResult>
             <form action="start_event" method = "post">
                 <input type="hidden" name="eventId" value="${event.eventId}" />
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />

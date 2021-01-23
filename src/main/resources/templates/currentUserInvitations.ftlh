@@ -17,7 +17,7 @@
         <#list invitationsInvited as invitation>
             <tr>
                 <td><a href="/event/${invitation.event.eventId}">${invitation.event.eventName}</a></td>
-                <td>${invitation.creationDate}</td>
+                <td>${invitation.creationDate.toLocalDate()}</td>
                 <td>${invitation.invitorUser.username}</td>
                 <td>
                     <form action="mark_invitation_${invitation.accepted?then('unaccepted', 'accepted')}" method="post">
@@ -54,7 +54,7 @@
         <#list invitationsInvitor as invitation>
             <tr>
                 <td><a href="/event/${invitation.event.eventId}">${invitation.event.eventName}</a></td>
-                <td>${invitation.creationDate}</td>
+                <td>${invitation.creationDate.toLocalDate()}</td>
                 <td><#if invitation.invitedUser??>${invitation.invitedUser.username}<#elseif invitation.emailInvitation??>${invitation.emailInvitation}</#if></td>
                 <td>${invitation.accepted?then('Да', 'Нет')}</td>
                 <td>${invitation.informed?then('Да', 'Нет')}</td>
