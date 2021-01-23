@@ -153,10 +153,7 @@ public class EventController {
                             @RequestParam(value = "membersJSON", required = false) String membersJSON,
                             @RequestParam(value = "teams", required = false, defaultValue = "0") Integer teams,
                             @RequestParam(value = "playersOnTeam", required = false, defaultValue = "0") Integer playersOnTeam) {
-        log.info("CREATE NEW EVENT");
-        Event newEvent = new Event(name, LocalDateTime.now());
-                            @RequestParam(value = "teams", required = false) Integer teams,
-                            @RequestParam(value = "playersOnTeam", required = false) Integer playersOnTeam) {
+
         log.info("CREATE NEW or UPDATE EVENT");
         Event eventToSave;
         if (event == null) {
