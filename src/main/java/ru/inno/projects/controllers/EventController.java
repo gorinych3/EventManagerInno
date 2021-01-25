@@ -151,8 +151,9 @@ public class EventController {
                             @RequestParam(value = "eventDate", required = false) String eventDate,
                             @RequestParam(value = "eventTossDate", required = false) String eventTossDate,
                             @RequestParam(value = "membersJSON", required = false) String membersJSON,
-                            @RequestParam(value = "teams", required = false) Integer teams,
-                            @RequestParam(value = "playersOnTeam", required = false) Integer playersOnTeam) {
+                            @RequestParam(value = "teams", required = false, defaultValue = "0") Integer teams,
+                            @RequestParam(value = "playersOnTeam", required = false, defaultValue = "0") Integer playersOnTeam) {
+
         log.info("CREATE NEW or UPDATE EVENT");
         Event eventToSave;
         if (event == null) {
@@ -184,11 +185,13 @@ public class EventController {
                              @RequestParam(value = "eventId") long eventId, Model model) {
         log.info("START ACTION");
         Event resultEvent = eventService.startAction(eventId);
+        Action action = actionService.getActionById(resultEvent.getAction().getActionId());
 
         model.addAttribute("user", user);
         model.addAttribute("event", resultEvent);
         model.addAttribute("action", resultEvent.getAction());
         model.addAttribute("playActions", resultEvent.getAction().getPlayActions());
+        model.addAttribute("santa", action.getTeams() == 0 && action.getPlayersOnTeam() == 0 ? 1 : 0);
         return "eventResultPage";
     }
 

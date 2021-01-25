@@ -84,36 +84,41 @@ public class SenderMail2User implements Runnable {
     }
 
     public void send(String email, Event event) {
-        Invitation invitation = invitationRepo.findInvitationByEmailInvitationAndEvent(email, event);
 
-        User invitedUser = userRepo.findUserByEmail(email);
+        try {
+            Invitation invitation = invitationRepo.findInvitationByEmailInvitationAndEvent(email, event);
 
-        if (invitedUser != null) {
-            final String message = String.format(
-                    "Привет! \n" +
-                            "%s тебя пригласили на ивент под названием: %s. \n" +
-                            "для просмотра ивента перейди по ссылке: " +
-                            "http://localhost:8080/event/%s \n" +
-                            "для участия в ивенте подтверди приглашение по ссылке: " +
-                            "http://localhost:8080/invitations/user",
-                    invitorUser.getUsername(),
-                    event.getEventName(),
-                    event.getEventId()
-            );
+            User invitedUser = userRepo.findUserByEmail(email);
 
-            mailservice.send(invitedUser.getEmail(), "Приглашение на ивент", message);
-        } else if (!invitation.getEmailInvitation().isEmpty()) {
-            final String message = String.format(
-                    "Привет! \n" +
-                            "Добро пожаловать в Event Manager. %s тебя пригласили на ивент под названием: %s, " +
-                            "для участия в ивенте перейди по ссылке: " +
-                            "http://localhost:8080/registration/invitation/%s",
-                    invitorUser.getUsername(),
-                    event.getEventName(),
-                    invitation.getEmailInvitation()
-            );
+            if (invitedUser != null) {
+                final String message = String.format(
+                        "Привет! \n" +
+                                "%s тебя пригласили на ивент под названием: %s. \n" +
+                                "для просмотра ивента перейди по ссылке: " +
+                                "http://localhost:8080/event/%s \n" +
+                                "для участия в ивенте подтверди приглашение по ссылке: " +
+                                "http://localhost:8080/invitations/user",
+                        invitorUser.getUsername(),
+                        event.getEventName(),
+                        event.getEventId()
+                );
 
-            mailservice.send(invitation.getEmailInvitation(), "Приглашение на ивент", message);
+                mailservice.send(invitedUser.getEmail(), "Приглашение на ивент", message);
+            } else if (!invitation.getEmailInvitation().isEmpty()) {
+                final String message = String.format(
+                        "Привет! \n" +
+                                "Добро пожаловать в Event Manager. %s тебя пригласили на ивент под названием: %s, " +
+                                "для участия в ивенте перейди по ссылке: " +
+                                "http://localhost:8080/registration/invitation/%s",
+                        invitorUser.getUsername(),
+                        event.getEventName(),
+                        invitation.getEmailInvitation()
+                );
+
+                mailservice.send(invitation.getEmailInvitation(), "Приглашение на ивент", message);
+            }
+        }catch (Exception e){
+            log.error("Не получилось доставить приглашение на почту клиента");
         }
     }
 }
