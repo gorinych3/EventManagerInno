@@ -66,16 +66,21 @@
         };
 
         function save(i, mail){
+            if (mail==""){
+                return;
+            }
             invitations[i] = mail;
             renewData();
         };
 
         function update(btelem, i, textelem) {
+            let text = textelem.value;
             textelem.innerHTML = "";
             let mail = document.createElement("input");
             mail.setAttribute("type", "text");
+            mail.setAttribute("class", "form-control");
+            mail.value = text;
             textelem.appendChild(mail);
-
             btelem.innerHTML = "";
             let btSave = document.createElement("button");
             btSave.setAttribute("type", "button");
