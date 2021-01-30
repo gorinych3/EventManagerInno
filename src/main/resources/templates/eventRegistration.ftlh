@@ -1,6 +1,6 @@
 <#import "parts/common.ftlh" as c>
 <@c.page>
-    <link href="floating-labels.css" rel="stylesheet">
+<#--    <link href="floating-labels.css" rel="stylesheet">-->
     <div>
         <table style="margin-top: 10px" class="table">
             <tr>
@@ -9,33 +9,39 @@
                         <form action="/event/create" method="post">
                             <p><b>Создание ивента</b></p>
                             <div class="form-group row">
-                                <div class="col-sm-6">
-                                    <label class="col-sm-2 col-form-label">Название ивента:</label>
+                                <div class="col-sm-11">
+                                    <label class="col-sm-12 col-form-label">Название ивента:</label>
                                     <input type="text" name="eventName" class="form-control" placeholder="Event name" />
-                                    <label class="col-sm-2 col-form-label">Дата проведения ивента:</label>
+                                    <label class="col-sm-12 col-form-label">Дата проведения ивента:</label>
                                     <input type="datetime-local" name="eventDate" class="form-control" placeholder="Event Date"/>
-                                    <label class="col-sm-2 col-form-label">Дата проведения жеребьевки:</label>
+                                    <label class="col-sm-12 col-form-label">Дата проведения жеребьевки:</label>
                                     <input type="date" name="eventTossDate" class="form-control" placeholder="Event Toss Date"/>
 <#--                                    <label class="col-sm-2 col-form-label">Количество команд:</label>-->
 <#--                                    <input type="number" name="teams" class="form-control" placeholder="number of teams"/>-->
 <#--                                    <label class="col-sm-2 col-form-label">Количество участников в команде:</label>-->
 <#--                                    <input type="number" name="playersOnTeam" class="form-control" placeholder="number of players in the team"/>-->
                                     <input type="hidden" id="membersJSON" name = "membersJSON" value=""/>
+                                    <h3></h3>
+                                    <button class="col-sm-12 btn btn-primary" type="submit">Создать ивент</button>
+                                    <input type="hidden" name="_csrf" value="${_csrf.token}" />
                                 </div>
                             </div>
-                            <button class="btn btn-primary" type="submit">Создать ивент</button>
-                            <input type="hidden" name="_csrf" value="${_csrf.token}" />
+
                         </form>
                         <hr class="featurette-divider">
 
-                        <form class="form-signin">
-                            <div class="form-label-group">
-                                <label for="inputEmail">Email участника</label>
-                                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+                        <div class="form-group row">
+                            <div class="col-sm-11">
+                                <form class="form-signin">
+                                    <div class="form-label-group">
+                                        <label class="col-sm-12 col-form-label" for="inputEmail">Email участника</label>
+                                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+                                    </div>
+                                    <h4></h4>
+                                    <button class="btn btn-lg btn-primary btn-block" onclick="getInputValue()" type="submit">Добавить участника</button>
+                                </form>
                             </div>
-                            <button class="btn btn-lg btn-primary btn-block" onclick="getInputValue()" type="submit">Добавить участника</button>
-                        </form>
-
+                        </div>
                     </div>
                 </th>
                 <th scope="col">
@@ -62,20 +68,36 @@
         let idx = 0;
 
         function updateMembers(email) {
-            invitations[idx++] = email;
+            if (!alreadyHasMail(email)){
+                invitations[idx++] = email;
+            }
+        };
+
+        function alreadyHasMail(text){
+            let len = invitations.length;
+            for(let i = 0; i < len; i++) {
+                if (invitations[i]==text) {
+                    return true;
+                }
+            }
+            return false;
         };
 
         function save(i, mail){
+            if (mail=="" || !validateEmail(mail) || (alreadyHasMail(mail) && invitations.length!=1)){
+                return;
+            }
             invitations[i] = mail;
             renewData();
         };
 
-        function update(btelem, i, textelem) {
+        function update(btelem, i, textelem, text) {
             textelem.innerHTML = "";
             let mail = document.createElement("input");
             mail.setAttribute("type", "text");
+            mail.setAttribute("class", "form-control");
+            mail.value = text;
             textelem.appendChild(mail);
-
             btelem.innerHTML = "";
             let btSave = document.createElement("button");
             btSave.setAttribute("type", "button");
@@ -93,6 +115,8 @@
             let membersJSON = document.getElementById("membersJSON");
             membersJSON.value=JSON.stringify(invitations);
         };
+
+
 
         function deleteRow(i){
             idx--;
@@ -126,7 +150,7 @@
                 btEdit.setAttribute("class", "btn btn-danger btn-sm");
                 btEdit.appendChild(document.createTextNode("Update"));
                 btEdit.addEventListener("click", function() {
-                    update(th1, i, th)
+                    update(th1, i, th, invitations[i])
                 });
                 th1.appendChild(bt);
                 th1.appendChild(btEdit);
@@ -135,9 +159,14 @@
             }
         };
 
+        function validateEmail(email) {
+            let re = /^[\w-\.]+@[\w-]+/i;
+            return re.test(String(email).toLowerCase());
+        }
+
         function getInputValue() {
             let p = document.getElementById("inputEmail");
-            if (p.value == ""){
+            if (p.value == "" || !validateEmail(p.value)){
                 return;
             }
             updateMembers(p.value);
