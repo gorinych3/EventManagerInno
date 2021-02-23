@@ -25,8 +25,7 @@ spring:
   mail:
     host: smtp.yandex.ru
     username: dk-st31-eventmanager@yandex.ru
-    #password: eventmanager
-    password: zmlquqcwfwqjymod
+    password:
     port: 465
     protocol: smtps
   session:
